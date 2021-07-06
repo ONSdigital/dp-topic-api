@@ -11,7 +11,6 @@ import (
 	"github.com/ONSdigital/dp-topic-api/service"
 	serviceMock "github.com/ONSdigital/dp-topic-api/service/mock"
 	"github.com/ONSdigital/dp-topic-api/store"
-	"github.com/benweissmann/memongo"
 	"github.com/cucumber/godog"
 	"github.com/gofrs/uuid"
 	"go.mongodb.org/mongo-driver/bson"
@@ -49,19 +48,19 @@ func NewTopicComponent(mongoFeature *componenttest.MongoFeature, zebedeeURL stri
 
 	f.Config.EnablePermissionsAuth = false
 
-	getMongoURI := fmt.Sprintf("localhost:%d", mongoFeature.Server.Port())
-	databaseName := memongo.RandomDatabase()
+	getMongoURI := fmt.Sprintf("<UPDATE_TO_DOCDB_INSTANCE_URL>:%d", 27017)
+	//databaseName := memongo.RandomDatabase()
 
-	username, password := createCredsInDB(getMongoURI, databaseName)
+	//username, password := createCredsInDB(getMongoURI, databaseName)
 
 	mongodb := &mongo.Mongo{
-		Database:          databaseName,
+		Database:          "test-db-1",
 		URI:               getMongoURI,
-		Username:          username,
-		Password:          password,
+		Username:          "root",
+		Password:          "<UPDATE_ME>",
 		TopicsCollection:  f.Config.MongoConfig.TopicsCollection,
 		ContentCollection: f.Config.MongoConfig.ContentCollection,
-		IsSSL:             false,
+		IsSSL:             true,
 	}
 
 	if err := mongodb.Init(context.TODO(), false, true); err != nil {
@@ -127,7 +126,7 @@ func (f *TopicComponent) RegisterSteps(ctx *godog.ScenarioContext) {
 }
 
 func (f *TopicComponent) Reset() *TopicComponent {
-	f.MongoClient.Database = memongo.RandomDatabase()
+	//f.MongoClient.Database = memongo.RandomDatabase()
 	f.MongoClient.Init(context.TODO(), false, true)
 	f.Config.EnablePrivateEndpoints = false
 	return f
