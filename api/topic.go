@@ -72,7 +72,11 @@ func (api *API) getSubtopicsPublicByID(ctx context.Context, id string, logdata l
 	// get topic from mongoDB by id
 	topic, err := api.dataStore.Backend.GetTopic(ctx, id)
 	if err != nil {
+
 		// no topic found to retrieve the subtopics from
+
+
+		
 		handleError(ctx, w, err, logdata)
 		return
 	}

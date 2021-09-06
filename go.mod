@@ -7,7 +7,7 @@ require (
 	github.com/ONSdigital/dp-authorisation v0.1.0
 	github.com/ONSdigital/dp-component-test v0.3.1
 	github.com/ONSdigital/dp-healthcheck v1.0.5
-	github.com/ONSdigital/dp-mongodb/v2 v2.8.0
+	github.com/ONSdigital/dp-mongodb/v2 v2.7.0
 	github.com/ONSdigital/dp-net v1.0.12
 	github.com/ONSdigital/go-ns v0.0.0-20200902154605-290c8b5ba5eb // indirect
 	github.com/ONSdigital/log.go v1.0.1
