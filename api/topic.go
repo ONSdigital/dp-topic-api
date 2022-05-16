@@ -234,3 +234,238 @@ func (api *API) getTopicsListPrivateHandler(w http.ResponseWriter, req *http.Req
 	// so we directly return that list
 	api.getSubtopicsPrivateByID(ctx, id, logdata, w)
 }
+
+// getNavigationPrivateHandler is currently a hard-coded list of topics to be used for site navigation
+func (api *API) getNavigationPrivateHandler(w http.ResponseWriter, req *http.Request) {
+	ctx := req.Context()
+
+	items := []models.TopicNonReferential{
+		{
+			Title:           "Business, industry and trade",
+			Description:     "Activities of businesses and industry in the UK, including data on the production and trade of goods and services, sales by retailers, characteristics of businesses, the construction and manufacturing sectors, and international trade.",
+			LocaliseKeyName: "businessindustryandtrade",
+			Href:            "/topics/businessindustryandtrade",
+			SubtopicItems: []models.TopicNonReferential{
+				{
+					Title:           "Business",
+					Description:     "UK businesses registered for VAT and PAYE with regional breakdowns, including data on size (employment and turnover) and activity (type of industry), research and development, and business services.",
+					LocaliseKeyName: "business",
+					Href:            "/topics/business",
+				},
+				{
+					Title:           "Changes to business",
+					Description:     "UK business growth, survival and change over time. These figures are an informal indicator of confidence in the UK economy.",
+					LocaliseKeyName: "changestobusiness",
+					Href:            "/topics/changestobusiness",
+				},
+				{
+					Title:           "Construction industry",
+					Description:     "Construction of new buildings and repairs or alterations to existing properties in Great Britain measured by the amount charged for the work, including work by civil engineering companies. ",
+					LocaliseKeyName: "constructionindustry",
+					Href:            "http://localhost:25300/topics/constructionindustry",
+				},
+				{
+					Title:           "International trade",
+					Description:     "Trade in goods and services across the UK's international borders, including total imports and exports, the types of goods and services traded and general trends in international trade. ",
+					LocaliseKeyName: "internationaltrade",
+					Href:            "http://localhost:25300/topics/internationaltrade",
+				},
+				{
+					Title:           "IT and internet industry",
+					Description:     "Internet sales by businesses in the UK (total value and as a percentage of all retail sales) and the percentage of businesses that have a website and broadband connection. These figures indicate the importance of the internet to UK businesses.",
+					LocaliseKeyName: "itandinternetindustry",
+					Href:            "http://localhost:25300/topics/itandinternetindustry",
+				},
+				{
+					Title:           "Manufacturing and production industry",
+					Description:     "UK manufacturing and other production industries (such as mining and quarrying, energy supply, water supply and waste management), including total UK production output, and UK manufactures' sales by product and industrial division, with EU comparisons.",
+					LocaliseKeyName: "manufacturingandproductionindustry",
+					Href:            "http://localhost:25300/topics/manufacturingandproductionindustry",
+				},
+				{
+					Title:           "Retail industry",
+					Description:     "",
+					LocaliseKeyName: "retailindustry",
+					Href:            "http://localhost:25300/topics/retailindustry",
+				},
+				{
+					Title:           "Tourism industry",
+					Description:     "Tourism and travel (including accommodation services, food and beverage services, passenger transport services, vehicle hire, travel agencies and sports, recreational and conference services), employment levels and output of the tourism industry, the number of visitors to the UK and the amount they spend.",
+					LocaliseKeyName: "tourismindustry",
+					Href:            "http://localhost:25300/topics/tourismindustry",
+				},
+			},
+		},
+		{
+			Title:           "Economy",
+			Description:     "UK economic activity covering production, distribution, consumption and trade of goods and services. Individuals, businesses, organisations and governments all affect the development of the economy.",
+			LocaliseKeyName: "economy",
+			Href:            "/topics/economy",
+			SubtopicItems: []models.TopicNonReferential{
+				{
+					Description:     "Manufacturing, production and services indices (measuring total economic output) and productivity (measuring efficiency, expressed as a ratio of output to input over a given period of time, for example output per person per hour).",
+					Title:           "Economic output and productivity",
+					Href:            "/topics/economicoutputandproductivity",
+					LocaliseKeyName: "economicoutputandproductivity",
+				},
+				{
+					Description:     "Environmental accounts show how the environment contributes to the economy (for example, through the extraction of raw materials), the impacts that the economy has on the environment (for example, energy consumption and air emissions), and how society responds to environmental issues (for example, through taxation and expenditure on environmental protection).",
+					Title:           "Environmental accounts",
+					Href:            "/topics/environmentalaccounts",
+					LocaliseKeyName: "environmentalaccounts",
+				},
+				{
+					Description:     "Public sector spending, tax revenues and investments for the UK, including government debt and deficit (the gap between revenue and spending), research and development, and the effect of taxes.",
+					Title:           "Government, public sector and taxes",
+					Href:            "/topics/governmentpublicsectorandtaxes",
+					LocaliseKeyName: "governmentpublicsectorandtaxes",
+				},
+				{
+					Description:     "Estimates of GDP are released on a monthly and quarterly basis. Monthly estimates are released alongside other short-term economic indicators. The two quarterly estimates contain data from all three approaches to measuring GDP and are called the First quarterly estimate of GDP and the Quarterly National Accounts. Data sources feeding into the two types of releases are consistent with each other.",
+					Title:           "Gross Domestic Product (GDP)",
+					Href:            "/topics/grossdomesticproductgdp",
+					LocaliseKeyName: "grossdomesticproductgdp",
+				},
+				{
+					Description:     "Regional gross value added using production (GVA(P)) and income (GVA(I)) approaches. Regional gross value added is the value generated by any unit engaged in the production of goods and services. GVA per head is a useful way of comparing regions of different sizes. It is not, however, a measure of regional productivity.",
+					Title:           "Gross Value Added (GVA)",
+					Href:            "/topics/grossvalueaddedgva",
+					LocaliseKeyName: "grossvalueaddedgva",
+				},
+				{
+					Description:     "The rate of increase in prices for goods and services. Measures of inflation and prices include consumer price inflation, producer price inflation, the house price index, index of private housing rental prices, and construction output price indices. ",
+					Title:           "Inflation and price indices",
+					Href:            "/topics/inflationandpriceindices",
+					LocaliseKeyName: "inflationandpriceindices",
+				},
+				{
+					Description:     "Net flows of investment into the UK, the number of people who hold pensions of different types, and investments made by various types of trusts. ",
+					Title:           "Investments, pensions and trusts",
+					Href:            "/topics/investmentspensionsandtrusts",
+					LocaliseKeyName: "investmentspensionsandtrusts",
+				},
+				{
+					Description:     "Core accounts for the UK economy as a whole; individual sectors (sector accounts); accounts for the regions, subregions and local areas of the UK; and satellite accounts that cover activities linked to the economy. The national accounts framework brings units and transactions together to provide a simple and understandable description of production, income, consumption, accumulation and wealth.",
+					Title:           "National accounts",
+					Href:            "/topics/nationalaccounts",
+					LocaliseKeyName: "nationalaccounts",
+				},
+				{
+					Description:     "Accounts for regions, sub-regions and local areas of the UK. These accounts allow comparisons between regions and against a UK average. Statistics include regional gross value added (GVA) and figures on regional gross disposable household income (GDHI).",
+					Title:           "Regional accounts",
+					Href:            "/topics/regionalaccounts",
+					LocaliseKeyName: "regionalaccounts",
+				},
+			},
+		},
+		{
+			Title:           "Employment and labour market",
+			Description:     "People in and out of work covering employment, unemployment, types of work, earnings, working patterns and workplace disputes.",
+			LocaliseKeyName: "employmentandlabourmarket",
+			Href:            "/topics/employmentandlabourmarket",
+			SubtopicItems: []models.TopicNonReferential{
+				{
+					Description:     "Employment data covering employment rates, hours of work, claimants and earnings.",
+					Title:           "People in work",
+					Href:            "http://localhost:25300/topics/peopleinwork",
+					LocaliseKeyName: "peopleinwork",
+				},
+				{
+					Description:     "Unemployed and economically inactive people in the UK including claimants of out-of-work benefits and the number of redundancies.\n",
+					Title:           "People not in work",
+					Href:            "http://localhost:25300/topics/peoplenotinwork",
+					LocaliseKeyName: "peoplenotinwork",
+				},
+			},
+		},
+		{
+			Title:           "People, population and community",
+			Description:     "People living in the UK, changes in the population, how we spend our money, and data on crime, relationships, health and religion. These statistics help us build a detailed picture of how we live.",
+			LocaliseKeyName: "peoplepopulationandcommunity",
+			Href:            "/topics/peoplepopulationandcommunity",
+			SubtopicItems: []models.TopicNonReferential{
+				{
+					Description:     "Life events in the UK including fertility rates, live births and stillbirths, family composition, life expectancy and deaths. This tells us about the health and relationships of the population.",
+					Title:           "Births, deaths and marriages",
+					Href:            "http://localhost:25300/topics/birthsdeathsandmarriages",
+					LocaliseKeyName: "birthsdeathsandmarriages",
+				},
+				{
+					Description:     "Crimes committed and the victims' characteristics, sourced from crimes recorded by the police and from the Crime Survey for England and Wales (CSEW). The outcomes of crime in terms of what happened to the offender are also included.",
+					Title:           "Crime and justice",
+					Href:            "http://localhost:25300/topics/crimeandjustice",
+					LocaliseKeyName: "crimeandjustice",
+				},
+				{
+					Description:     "How people in the UK see themselves today in terms of ethnicity, sexual identity, religion and language, and how this has changed over time. We use a diverse range of sources for this data.",
+					Title:           "Cultural identity",
+					Href:            "http://localhost:25300/topics/culturalidentity",
+					LocaliseKeyName: "culturalidentity",
+				},
+				{
+					Description:     "Early years childcare, school and college education, and higher education and adult learning, including qualifications, personnel, and safety and well-being. ",
+					Title:           "Education and childcare",
+					Href:            "http://localhost:25300/topics/educationandchildcare",
+					LocaliseKeyName: "educationandchildcare",
+				},
+				{
+					Description:     "",
+					Title:           "Elections",
+					Href:            "http://localhost:25300/topics/elections",
+					LocaliseKeyName: "elections",
+				},
+				{
+					Description:     "Life expectancy and the impact of factors such as occupation, illness and drug misuse. We collect these statistics from registrations and surveys. ",
+					Title:           "Health and social care",
+					Href:            "http://localhost:25300/topics/healthandsocialcare",
+					LocaliseKeyName: "healthandsocialcare",
+				},
+				{
+					Description:     "The composition of households, including those who live alone, overcrowding and under-occupation, as well as internet and social media usage by household.",
+					Title:           "Household characteristics",
+					Href:            "http://localhost:25300/topics/householdcharacteristics",
+					LocaliseKeyName: "householdcharacteristics",
+				},
+				{
+					Description:     "Property price, private rent and household survey and census statistics, used by government and other organisations for the creation and fulfilment of housing policy in the UK.",
+					Title:           "Housing",
+					Href:            "http://localhost:25300/topics/housing",
+					LocaliseKeyName: "housing",
+				},
+				{
+					Description:     "Visits and visitors to the UK, the reasons for visiting and the amount of money they spent here. Also UK residents travelling abroad, their reasons for travel and the amount of money they spent. The statistics on UK residents travelling abroad are an informal indicator of living standards.",
+					Title:           "Leisure and tourism",
+					Href:            "http://localhost:25300/topics/leisureandtourism",
+					LocaliseKeyName: "leisureandtourism",
+				},
+				{
+					Description:     "Earnings and household spending, including household and personal debt, expenditure, and income and wealth. These statistics help build a picture of our spending and saving decisions. ",
+					Title:           "Personal and household finances",
+					Href:            "http://localhost:25300/topics/personalandhouseholdfinances",
+					LocaliseKeyName: "personalandhouseholdfinances",
+				},
+				{
+					Description:     "Size, age, sex and geographic distribution of the UK population, and changes in the UK population and the factors driving these changes. These statistics have a wide range of uses. Central government, local government and the health sector use them for planning, resource allocation and managing the economy. They are also used by people such as market researchers and academics.",
+					Title:           "Population and migration",
+					Href:            "http://localhost:25300/topics/populationandmigration",
+					LocaliseKeyName: "populationandmigration",
+				},
+				{
+					Description:     "Societal and personal well-being in the UK looking beyond what we produce, to areas such as health, relationships, education and skills, what we do, where we live, our finances and the environment. This data comes from a variety of sources and much of the analysis is new.",
+					Title:           "Well-being",
+					Href:            "http://localhost:25300/topics/wellbeing",
+					LocaliseKeyName: "wellbeing",
+				},
+			},
+		},
+	}
+
+	logdata := log.Data{
+		"request_id": ctx.Value(dprequest.RequestIdKey),
+		"function":   "getNavigationPrivateHandler",
+	}
+	if err := WriteJSONBody(ctx, items, w, logdata); err != nil {
+		// WriteJSONBody has already logged the error
+		return
+	}
+}

@@ -98,6 +98,12 @@ func (api *API) enablePrivateTopicEndpoints(ctx context.Context) {
 		api.isAuthenticated(
 			api.isAuthorised(readPermission, api.getTopicsListPrivateHandler)),
 	)
+
+	api.get(
+		"/navigation",
+		api.isAuthenticated(
+			api.isAuthorised(readPermission, api.getNavigationPrivateHandler)),
+	)
 }
 
 // isAuthenticated wraps a http handler func in another http handler func that checks the caller is authenticated to
