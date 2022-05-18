@@ -86,6 +86,21 @@ paths:
           description: "Content not found"
         500:
           $ref: '#/responses/InternalError'
+  /topics/navigation:
+    get:
+      tags:
+        - "Public"
+      summary: "Get a list for navigation"
+      description: "Get a list of topics for site navigation"
+      produces:
+        - "application/json"
+      responses:
+        200:
+          description: "Provides a hierarchical list of navigation items with their links, copy and localisation references"
+          schema:
+            $ref: '#/definitions/ListOfNavigationItems'
+        500:
+          $ref: '#/responses/InternalError'
 responses:
   InternalError:
     description: "Failed to process the request due to an internal error"
@@ -95,7 +110,7 @@ definitions:
     properties:
       title:
         type: string
-        description: "ttitle of the information"
+        description: "title of the information"
       type:
         type: string
         description: "Name of the containing type"
@@ -217,3 +232,39 @@ definitions:
   Offset:
     type: integer
     description: "The offset applied to the number of results returned"
+  Description:
+    type: string
+    description: "A human-readable description as a string"
+  LocaliseKeyName:
+    type: string
+    description: "A string reference to be used by language localisation services"
+  Title:
+    type: string
+    description: "A string containing the title of something"
+  Href:
+    type: string
+    description: "A hyperlink reference as a string"
+  ListOfNavigationItems:
+    type: object
+    description: "A list of navigation items"
+    properties:
+      description:
+        $ref: '#/definitions/Description'
+      title:
+        $ref: '#/definitions/Title'
+      localise_key_name:
+        $ref: '#/definitions/LocaliseKeyName'
+      href:
+        $ref: '#/definitions/Href'
+      subtopics_items:
+        type: array
+        items:
+          properties:
+            description:
+              $ref: '#/definitions/Description'
+            title:
+              $ref: '#/definitions/Title'
+            localise_key_name:
+              $ref: '#/definitions/LocaliseKeyName'
+            href:
+              $ref: '#/definitions/Href'
