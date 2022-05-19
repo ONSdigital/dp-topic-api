@@ -18,7 +18,7 @@ build:
 	go build -tags 'production' $(LDFLAGS) -o $(BINPATH)/dp-topic-api
 
 .PHONY: debug
-debug:
+debug: generate-debug
 	go build -tags 'debug' $(LDFLAGS) -o $(BINPATH)/dp-topic-api
 	HUMAN_LOG=1 DEBUG=1 $(BINPATH)/dp-topic-api
 
@@ -42,3 +42,25 @@ convey:
 fixfmt:
 	go fmt ./...
 
+.PHONY: generate-debug
+generate-debug: fetch-dp-renderer
+	# fetch the renderer library and build the dev version
+	cd assets; go run github.com/kevinburke/go-bindata/go-bindata -prefix $(CORE_ASSETS_PATH)/assets -debug -o data.go -pkg assets $(CORE_ASSETS_PATH)/assets/locales/...
+	{ echo "// +build debug\n"; cat assets/data.go; } > assets/debug.go.new
+	mv assets/debug.go.new assets/data.go
+
+.PHONY: generate-prod
+generate-prod: fetch-dp-renderer
+	# fetch the renderer library and build the prod version
+	cd assets; go run github.com/kevinburke/go-bindata/go-bindata -prefix $(CORE_ASSETS_PATH)/assets -o data.go -pkg assets $(CORE_ASSETS_PATH)/assets/locales/...
+	{ echo "// +build production\n"; cat assets/data.go; } > assets/data.go.new
+	mv assets/data.go.new assets/data.go
+
+.PHONY: fetch-dp-renderer
+fetch-dp-renderer:
+ifeq ($(LOCAL_DP_RENDERER_IN_USE), 1)
+	$(eval CORE_ASSETS_PATH = $(shell grep -w "\"github.com/ONSdigital/dp-renderer\" =>" go.mod | awk -F '=> ' '{print $$2}' | tr -d '"'))
+else
+	$(eval APP_RENDERER_VERSION=$(shell grep "github.com/ONSdigital/dp-renderer" go.mod | cut -d ' ' -f2 ))
+	$(eval CORE_ASSETS_PATH = $(shell go get github.com/ONSdigital/dp-renderer@$(APP_RENDERER_VERSION) && go list -f '{{.Dir}}' -m github.com/ONSdigital/dp-renderer))
+endif

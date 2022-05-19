@@ -25,6 +25,12 @@ parameters:
     in: query
     required: false
     type: string
+  lang:
+    name: lang
+    description: "the 2 character code of the language required in returned labels"
+    in: query
+    type: string
+    required: true
 paths:
   /topics/{id}:
     get:
@@ -94,6 +100,8 @@ paths:
       description: "Get a list of topics for site navigation"
       produces:
         - "application/json"
+      parameters:
+        - $ref: '#/parameters/lang'
       responses:
         200:
           description: "Provides a hierarchical list of navigation items with their links, copy and localisation references"
@@ -235,9 +243,12 @@ definitions:
   Description:
     type: string
     description: "A human-readable description as a string"
-  LocaliseKeyName:
+  Name:
     type: string
-    description: "A string reference to be used by language localisation services"
+    description: "A hyphenated reference to the item"
+  Label:
+    type: string
+    description: "The label to be displayed to a user, translated based on the lang parameter"
   Title:
     type: string
     description: "A string containing the title of something"
@@ -252,8 +263,10 @@ definitions:
         $ref: '#/definitions/Description'
       title:
         $ref: '#/definitions/Title'
-      localise_key_name:
-        $ref: '#/definitions/LocaliseKeyName'
+      name:
+        $ref: '#/definitions/Name'
+      label:
+        $ref: '#/definitions/Label'
       href:
         $ref: '#/definitions/Href'
       subtopics_items:
@@ -264,7 +277,9 @@ definitions:
               $ref: '#/definitions/Description'
             title:
               $ref: '#/definitions/Title'
-            localise_key_name:
-              $ref: '#/definitions/LocaliseKeyName'
+            name:
+              $ref: '#/definitions/Name'
+            label:
+              $ref: '#/definitions/Label'
             href:
               $ref: '#/definitions/Href'

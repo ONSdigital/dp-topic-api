@@ -28,16 +28,17 @@ type Topic struct {
 
 // TopicNonReferential is used to create a single comprehensive list of topics and subtopics.
 type TopicNonReferential struct {
-	ID              string                `bson:"_id,omitempty"            json:"id,omitempty"`
-	Description     string                `bson:"description,omitempty"    json:"description,omitempty"`
-	Title           string                `bson:"title,omitempty"          json:"title,omitempty"`
-	Keywords        []string              `bson:"keywords,omitempty"       json:"keywords,omitempty"`
-	State           string                `bson:"state,omitempty"          json:"state,omitempty"`
-	Links           *TopicLinks           `bson:"links,omitempty"          json:"links,omitempty"`
-	SubtopicIds     []string              `bson:"subtopics_ids,omitempty"  json:"-"`
-	SubtopicItems   []TopicNonReferential `bson:"subtopics_items,omitempty"  json:"subtopics_items,omitempty"`
-	LocaliseKeyName string                `bson:"localise_key_name,omitempty"  json:"localise_key_name,omitempty"`
-	Href            string                `bson:"href,omitempty"  json:"href,omitempty"`
+	ID            string                `bson:"_id,omitempty"            json:"id,omitempty"`
+	Description   string                `bson:"description,omitempty"    json:"description,omitempty"`
+	Title         string                `bson:"title,omitempty"          json:"title,omitempty"`
+	Keywords      []string              `bson:"keywords,omitempty"       json:"keywords,omitempty"`
+	State         string                `bson:"state,omitempty"          json:"state,omitempty"`
+	Links         *TopicLinks           `bson:"links,omitempty"          json:"links,omitempty"`
+	SubtopicIds   []string              `bson:"subtopics_ids,omitempty"  json:"-"`
+	SubtopicItems []TopicNonReferential `bson:"subtopics_items,omitempty"  json:"subtopics_items,omitempty"`
+	Name          string                `bson:"name,omitempty"  json:"name,omitempty"`
+	Label         string                `bson:"label,omitempty"  json:"label,omitempty"`
+	Href          string                `bson:"href,omitempty"  json:"href,omitempty"`
 }
 
 // TopicWrite is used for component testing

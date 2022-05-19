@@ -1,0 +1,527 @@
+# active.cy.toml
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# Notes
+# - Documentation: https://github.com/nicksnyder/go-i18n/blob/master/README.md
+# - Description should be the English version of the text, unless English version is a shorthand e.g. Home button is shorthand in English for Homepage
+# - Arguments can be added via {{.argN}} where N is integer index starting at 0 e.g. {{.arg0}} {{.arg1}}
+# - To inject HTML (Avoid where possible as it is messy) use "| safeHTML" e.g. {{ localise Foo .Language 1 | safeHTML }} where Foo might be "<strong>test</strong>"
+# count - 0 = zero
+# count - 1 = one
+# count - 2 = two; useful for languages with mutations like welsh (radical) 'brother'=brawd, two (soft) 'brothers'=frawd, three or more (nasal) 'brothers'=brodyr
+# count - 3 = few
+# count - 6 = many
+# count - 4 = other; 4,5 & >6
+# Plural rules can be found here: http://www.unicode.org/cldr/charts/latest/supplemental/language_plural_rules.html
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+# Primarily used in header template
+[OfficeForNationalStatistics]
+description = "Office for National Statistics"
+one = "Swyddfa Ystadegau Gwladol"
+
+[Home]
+description = "Homepage"
+one = "Hafan"
+
+[HomepageDescription]
+description = "The UK's largest independent producer of official statistics and the recognised national statistical institute of the UK."
+one = "The UK's largest independent producer of official statistics and the recognised national statistical institute of the UK."
+
+[ONSLogoAlt]
+description = "Office for National Statistics Logo - Homepage"
+one = "Logo Swyddfa Ystadegau Gwladol - Hafan"
+
+[SkipToContent]
+description = "Skip to main content"
+one = "Skip to main content"
+
+[ChangeLanguage]
+description = "Change language"
+one = "Change language"
+
+[WelshToggle]
+description = "Cymraeg (CY)"
+one = "Cymraeg (CY)"
+
+[EnglishToggle]
+description = "English (EN)"
+one = "English (EN)"
+
+[ReleaseCalendar]
+description = "Release calendar"
+one = "Calendar datganiadau"
+
+[Media]
+description = "Media"
+one = "Media"
+
+[About]
+description = "About"
+one = "Amdanom ni"
+
+[Blog]
+description = "Blog"
+one = "Blog"
+
+[Menu]
+description = "Menu"
+one = "Dewislen"
+
+[SubMenu]
+description = "sub menu"
+one = "is-dewislen"
+
+[Search]
+description = "Search"
+one = "Chwilio"
+
+[BusinessIndustryTrade]
+description = "Business, industry and trade"
+one = "Busnes, diwydiant a masnach"
+
+[Business]
+description = "Business"
+one = "Busnes"
+
+[ChangesToBusiness]
+description = "Changes to business"
+one = "Newidiadau i fusnesau"
+
+[ConstructionIndustry]
+description = "Construction industry"
+one = "Diwydiant adeiladu"
+
+[ITInternetIndustry]
+description = "IT and internet industry"
+one = "Y diwydiant TG a'r rhyngrwyd"
+
+[InternationalTrade]
+description = "International trade"
+one = "Masnach ryngwladol"
+
+[ManufacturingProductionIndustry]
+description = "Manufacturing and production industry"
+one = "Y diwydiant gweithgynhyrchu a chynhyrchu"
+
+[RetailIndustry]
+description = "Retail industry"
+one = "Y diwydiant manwethu"
+
+[TourismIndustry]
+description = "Tourism industry"
+one = "Y diwydiant twristiaeth"
+
+[Economy]
+description = "Economy"
+one = "Yr economi"
+
+[EconomicOutputProductivity]
+description = "Economic output and productivity"
+one = "Allgynnyrch economaidd a chynhyrchiant"
+
+[EnvironmentalAccounts]
+description = "Environmental accounts"
+one = "Cyfrifon amgylcheddol"
+
+[GovernmentPublicSectorTaxes]
+description = "Government, public sector and taxes"
+one = "Llwodraeth, y sector cyhoeddus a threthi"
+
+[GrossDomesticProduct]
+description = "Gross Domestic Product (GDP)"
+one = "Cynnyrch Domestig Gros (CDG)"
+
+[GrossDomesticValue]
+description = "Gross Value Added (GVA)"
+one = "Gwerth Ychwanegol Gros"
+
+[InflationPriceIndices]
+description = "Inflation and price indices"
+one = "Mynegeion chwyddiant a phrisiau"
+
+[InvestmentsPensionsTrusts]
+description = "Investments, pensions and trusts"
+one = "Buddsoddiadau, pensiynau ac ymddiriedolaethau"
+
+[NationalAccounts]
+description = "National accounts"
+one = "Cyfrifon gwladol"
+
+[RegionalAccounts]
+description = "Regional accounts"
+one = "Cyfrifon rhanbarthol"
+
+[EmploymentLabourMarket]
+description = "Employment and labour market"
+one = "Cyflogaeth a'r farchnad lafur"
+
+[PeopleInWork]
+description = "People in work"
+one = "Pobl mewn gwaith"
+
+[PeopleNotInWork]
+description = "People not in work"
+one = "Pobl nad ydynt mewn gwaith"
+
+[PeoplePopulationCommunity]
+description = "People, population and community"
+one = "Pobl, y boblogaeth a chymunedau"
+
+[BirthsDeathsMarriages]
+description = "Births, deaths and marriages"
+one = "Genedigaethau, marwolaethau a phriodasau"
+
+[CrimeJustice]
+description = "Crime and justice"
+one = "Troseddu a chyfiawnder"
+
+[CulturalIdentity]
+description = "Cultural identity"
+one = "Hunaniaeth ddiwylliannol"
+
+[EducationChildcare]
+description = "Education and childcare"
+one = "Addysg a gofal plant"
+
+[Elections]
+description = "Elections"
+one = "Etholiadau"
+
+[HealthSocialCare]
+description = "Health and social care"
+one = "Iechyd a gofal cymdeithasol"
+
+[HouseholdCharacteristics]
+description = "Household characteristics"
+one = "Nodweddion aelwydydd"
+
+[Housing]
+description = "Housing"
+one = "Tai"
+
+[LeisureTourism]
+description = "Leisure and tourism"
+one = "Hamdden a thwristiaeth"
+
+[PersonalHouseholdFinances]
+description = "Personal and household finances"
+one = "Cyllid personol a chyllid aelwydydd"
+
+[PopulationMigration]
+description = "Population and migration"
+one = "Poblogaeth ac ymfudo"
+
+[Wellbeing]
+description = "Well-being"
+one = "Lles"
+
+[Methodology]
+description = "Methodology"
+one = "Methodoleg"
+other = "Methodoleg"
+
+[SearchKeywordTimeSeriesID]
+description = "Search for a keyword(s) or time series ID"
+one = "Chwilio am allweddair neu ID cyfres amser"
+
+[Covid19BannerTitle]
+description = "Coronafeirws (COVID-19)"
+one = "Coronafeirws (COVID-19)"
+
+[Covid19BannerBody]
+description = "Get the latest data and analysis on coronavirus (COVID-19) in the UK."
+one = "Y data a’r dadansoddiad diweddaraf ar y coronafeirws."
+
+[Beta]
+description = "Beta"
+one = "Beta"
+
+[BetaGeneralFeedback]
+description = "General beta banner feedback"
+one = "This is a new service – your <a href=\"/feedback\">feedback</a> will help us improve it."
+
+[BetaCMDFeedback]
+description = "This is a new way of getting data - your <a href=\"/feedback?service=cmd\">feedback</a> will help us to improve it."
+one = "This is a new way of getting data - your <a href=\"/feedback?service=cmd\">feedback</a> will help us to improve it."
+
+[BetaPreviousVersion]
+description = "You can still use the previous version"
+one = "You can still use the previous version"
+
+[BetaSearchFeedback]
+description = "This is a new search results page. <a href=\"/feedback\">Provide feedback to improve it</a>."
+one = "This is a new search results page. <a href=\"/feedback\">Provide feedback to improve it</a>."
+
+# Primarily used in footer template
+[FooterLinks]
+description = "Footer links"
+one = "Footer links"
+
+[Help]
+description = "Help"
+one = "Cymorth"
+
+[Accessibility]
+description = "Accessibility"
+one = "Hygyrchedd"
+
+[CookiesPrivacy]
+description = "Cookies and privacy"
+one = "Briwsion a phreifatrwydd"
+
+[Cookies]
+description = "Cwcis"
+one = "Cwci"
+other = "Cwcis"
+
+[Privacy]
+description = "Preifatrwydd"
+one = "Preifatrwydd"
+
+[TermsConditions]
+description = "Terms and conditions"
+one = "Telerau ac amodau"
+
+[AboutONS]
+description = "About ONS"
+one = "Ynglŷn ag SYG"
+
+[WhatWeDo]
+description = "What we do"
+one = "Beth rydym yn ei wneud"
+
+[Careers]
+description = "Careers"
+one = "Gyrfaoedd"
+
+[ContactUs]
+description = "Contact us"
+one = "Cysylltu â ni"
+
+[News]
+description = "Newyddion"
+one = "Newyddion"
+
+[FreedomInformation]
+description = "Freedom of Information"
+one = "Rhyddid Gwybodaeth"
+
+[ConnectWithUs]
+description = "Connect with us"
+one = "Cysylltu â ni"
+
+[Twitter]
+description = "Twitter"
+one = "Twitter"
+
+[Facebook]
+description = "Facebook"
+one = "Facebook"
+
+[LinkedIn]
+description = "LinkedIn"
+one = "LinkedIn"
+
+[Consultations]
+description = "Ymgynghoriadau"
+one = "Ymgynghoriad"
+other = "Ymgynghoriadau"
+
+[DiscussionForums]
+description = "Fforymau trafod"
+one = "Fforwm trafod"
+other = "Fforymau trafod"
+
+[EmailAlerts]
+description = "Email alerts"
+one = "Rhybuddion ebost"
+
+[OGLFull]
+description = "Open Government Licence v3.0"
+one = "Mae'r holl gynnwys ar gael o dan delerau'r <a class=\"icon--hide\" href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\" target=\"_blank\">Open Government Licence v3.0</a> <span class=\"icon icon-external--light-small\"></span>, ac eithrio lle y nodir fel arall"
+other = "Mae'r holl gynnwys ar gael o dan delerau'r <a class=\"ons-external-link\" href=\"http://www.nationalarchives.gov.uk/doc/open-government-licence/version/3/\" target=\"_blank\">Open Government Licence v3.0<span class=\"ons-external-link__icon\"><svg class=\"ons-svg-icon\" viewBox=\"0 0 12 12\" xmlns=\"http://www.w3.org/2000/svg\" focusable=\"false\" fill=\"currentColor\"><path d=\"M13.5,9H13a.5.5,0,0,0-.5.5v3h-9v-9h3A.5.5,0,0,0,7,3V2.5A.5.5,0,0,0,6.5,2h-4a.5.5,0,0,0-.5.5v11a.5.5,0,0,0,.5.5h11a.5.5,0,0,0,.5-.5v-4A.5.5,0,0,0,13.5,9Z\" transform=\"translate(-2 -1.99)\"/><path d=\"M8.83,7.88a.51.51,0,0,0,.71,0l2.31-2.32,1.28,1.28A.51.51,0,0,0,14,6.49v-4a.52.52,0,0,0-.5-.5h-4A.51.51,0,0,0,9,2.52a.58.58,0,0,0,.14.33l1.28,1.28L8.12,6.46a.51.51,0,0,0,0,.71Z\" transform=\"translate(-2 -1.99)\"/></svg></span></a>&nbsp;, ac eithrio lle y nodir fel arall"
+
+[On]
+description = "On"
+one = "On"
+
+[Off]
+description = "Off"
+one = "Off"
+
+[SaveChanges]
+description = "Save changes"
+one = "Save change"
+two = "Save changes"
+few = "Save changes"
+other = "Save changes"
+
+[SurveyTakingPart]
+description = "Taking part in a survey?"
+one = "Cymryd rhan mewn arolwg?"
+
+[CookiesBannerHeading]
+description = "Tell us whether you accept cookies"
+one = "Tell us whether you accept cookies"
+
+[CookiesBannerOverview]
+description = "We would like to <a href=\"/cookies\">use cookies to collect information</a> about how you use <strong>ons.gov.uk</strong>."
+one = "We would like to <a href=\"/cookies\">use cookies to collect information</a> about how you use <strong>ons.gov.uk</strong>."
+
+[CookiesBannerWhyWeUse]
+description = "We use this information to make the website work as well as possible and improve our services."
+one = "We use this information to make the website work as well as possible and improve our services."
+
+[CookiesBannerAcceptAllAction]
+description = "Accept all cookies"
+one = "Accept all cookies"
+
+[CookiesBannerSetPreferencesAction]
+description = "Set cookie preferences"
+one = "Set cookie preference"
+other = "Set cookie preferences"
+
+[CookiesBannerSuccess]
+description = "You’ve accepted all cookies. You can <a href=\"/cookies\">change your cookie settings</a> at any time."
+one = "You’ve accepted all cookies. You can <a href=\"/cookies\">change your cookie settings</a> at any time."
+
+[CookiesBannerHide]
+description = "Hide"
+one = "Hide"
+
+# Collapsible
+[HideThis]
+description = "Hide this"
+one = "Hide this"
+
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# FEEDBACK BAR
+#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+[Helpful]
+description = "Is this page useful?"
+one = "A yw'r dudalen hon yn ddefnyddiol?"
+
+[Yes]
+description = "Yes"
+one = "Ydy"
+
+[YesAria]
+description = "Yes I found this page useful"
+one = "Ydy, mae’r dudalen hon yn ddefnyddiol"
+
+[No]
+description = "No"
+one = "Nac ydy"
+
+[NoAria]
+description = "No I didn't find this page useful"
+one = "Nac ydy, nid yw’r dudalen hon yn ddefnyddiol"
+
+[CantFind]
+description = "Can't find what you're looking for?"
+one = "Methu â dod o hyd i'r hyn rydych yn chwilio amdano?"
+
+[ImproveThisPage]
+description = "How should we improve this page?"
+one = "Sut y dylem wella'r dudalen hon?"
+
+[WantAReply]
+description = "Do you want a reply?"
+one = "A hoffech gael ateb?"
+
+[WantAReplyBlurb]
+description = "If you'd like us to get back to you, please add your name and email address below."
+one = "Os hoffech i ni gysylltu â chi, ychwanegwch eich enw a'ch cyfeiriad e-bost isod."
+
+[NameOpt]
+description = "Name (optional)"
+one = "Enw (dewisol)"
+
+[EmailOpt]
+description = "Email (optional)"
+one = "E-bost (dewisol)"
+
+[SendFeedback]
+description = "Send feedback"
+one = "Anfon adborth"
+
+[CancelFeedback]
+description = "I don't want to provide feedback"
+one = "Nid wyf am roi adborth"
+
+[FeedbackSuccess]
+description = "Thank you. Your feedback will help us as we continue to improve the service."
+one = "Diolch. Bydd eich adborth yn ein helpu wrth i ni barhau i wella'r gwasanaeth."
+
+# Table of Contents
+[TableOfContents]
+description = "Table of contents"
+one = "Tabl cynnwys"
+other = "Tabl cynnwys"
+
+[Contents]
+description = "Contents"
+one = "Cynnwys"
+other = "Cynnwys"
+
+# InputDate
+[InputDateDay]
+description = "Day"
+one = "Diwrnod"
+
+[InputDateMonth]
+description = "Month"
+one = "Mis"
+
+[InputDateYear]
+description = "Year"
+one = "Blwyddyn"
+
+# Pagination
+[Pagination]
+description = "Pagination"
+one = "Tudaleniad"
+
+[PaginationPage]
+description = "Page"
+one = "Tudalen"
+
+[PaginationOf]
+description = "of"
+one = "o"
+
+[PaginationGoPrevious]
+description = "Go to the previous page"
+one = "Mynd i'r dudalen flaenorol"
+
+[PaginationGoFirst]
+description = "Go to the first page"
+one = "Mynd i'r dudalen gyntaf"
+
+[PaginationCurrentPage]
+description = "Current page"
+one = "Tudalen bresennol"
+
+[PaginationGoLast]
+description = "Go to the last page"
+one = "Mynd i'r dudalen olaf"
+
+[PaginationGoNext]
+description = "Go to the next page"
+one = "Mynd i'r dudalen nesaf"
+
+[PaginationPrevious]
+description = "Previous"
+one = "Blaenorol"
+
+[PaginationNext]
+description = "Next"
+one = "Nesaf"
+
+# Back to
+[BackToContents]
+description = "Back to contents"
+one = "Back to content"
+other = "Back to contents"
