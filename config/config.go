@@ -12,6 +12,7 @@ type MongoConfig = mongodb.MongoDriverConfig
 
 // Config represents service config for dp-topic-api
 type Config struct {
+	AppAuthToken               string        `envconfig:"APP_AUTH_TOKEN"                 json:"-"`
 	BindAddr                   string        `envconfig:"BIND_ADDR"`
 	GracefulShutdownTimeout    time.Duration `envconfig:"GRACEFUL_SHUTDOWN_TIMEOUT"`
 	HealthCheckInterval        time.Duration `envconfig:"HEALTHCHECK_INTERVAL"`
@@ -37,6 +38,7 @@ func Get() (*Config, error) {
 	}
 
 	cfg = &Config{
+		AppAuthToken:               "",
 		BindAddr:                   "localhost:25300",
 		GracefulShutdownTimeout:    10 * time.Second,
 		HealthCheckInterval:        30 * time.Second,

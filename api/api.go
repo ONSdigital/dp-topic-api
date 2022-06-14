@@ -8,9 +8,11 @@ import (
 	"io/ioutil"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/ONSdigital/dp-authorisation/auth"
 	dphandlers "github.com/ONSdigital/dp-net/handlers"
+	dphttp "github.com/ONSdigital/dp-net/v2/http"
 	"github.com/ONSdigital/dp-topic-api/apierrors"
 	"github.com/ONSdigital/dp-topic-api/config"
 	"github.com/ONSdigital/dp-topic-api/store"
@@ -60,8 +62,8 @@ func Setup(ctx context.Context, cfg *config.Config, router *mux.Router, dataStor
 		log.Info(ctx, "enabling only public endpoints for dataset api")
 		api.enablePublicEndpoints(ctx)
 
-		if cfg.EnablePermissionsAuth {
-			api.enablePublicEndpointsWithAuth(ctx)
+		if cfg.AppAuthToken != "" {
+			api.enablePublicEndpointsWithAuth(ctx, cfg.AppAuthToken)
 		}
 	}
 
@@ -76,12 +78,10 @@ func (api *API) enablePublicEndpoints(ctx context.Context) {
 	api.get("/topics", api.getTopicsListPublicHandler)
 }
 
-func (api *API) enablePublicEndpointsWithAuth(ctx context.Context) {
+func (api *API) enablePublicEndpointsWithAuth(ctx context.Context, expectedAuthToken string) {
 	// api.get("/navigation", api.getNavigationPrivateHandler)
-	api.get(
-		"/navigation",
-		api.isAuthenticated(
-			api.isAuthorised(readPermission, api.getNavigationPrivateHandler)),
+	api.get("/navigation",
+		api.isServiceRequest(expectedAuthToken, api.getNavigationPrivateHandler),
 	)
 }
 
@@ -117,6 +117,37 @@ func (api *API) enablePrivateTopicEndpoints(ctx context.Context) {
 		api.isAuthenticated(
 			api.isAuthorised(readPermission, api.getNavigationPrivateHandler)),
 	)
+}
+
+var prefix = "Bearer "
+
+func (api *API) isServiceRequest(expectedAuthToken string, handle func(http.ResponseWriter, *http.Request)) http.HandlerFunc {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
+		reqToken := r.Header.Get("Authorization")
+
+		splitToken := strings.Split(reqToken, prefix)
+		if len(splitToken) < 2 {
+			log.Warn(ctx, "unauthenticated request made", log.FormatErrors([]error{errors.New("authorisation header not set")}))
+			http.Error(w, "404 page not found", http.StatusNotFound) // Respond with not found as if endpoint doesn't exist
+			dphttp.DrainBody(r)
+			return
+		}
+
+		reqToken = splitToken[1]
+
+		// check authToken matches configured token
+		if reqToken != expectedAuthToken {
+			log.Warn(ctx, "unauthenticated request made", log.FormatErrors([]error{errors.New("invalid authorisation header value")}))
+			http.Error(w, "404 page not found", http.StatusNotFound) // Respond with not found as if endpoint doesn't exist
+			dphttp.DrainBody(r)
+			return
+		}
+
+		// The request has been authenticated, now run the clients request
+		log.Info(ctx, "authenticated request made")
+		handle(w, r)
+	})
 }
 
 // isAuthenticated wraps a http handler func in another http handler func that checks the caller is authenticated to

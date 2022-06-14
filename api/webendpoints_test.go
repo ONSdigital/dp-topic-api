@@ -88,7 +88,8 @@ func TestSetup(t *testing.T) {
 
 			mockedDataStore := &storetest.StorerMock{}
 
-			Convey("And when permission auth is enabled", func() {
+			Convey("And when the app auth token is not set", func() {
+				cfg.AppAuthToken = ""
 				cfg.EnablePermissionsAuth = true
 				api := GetWebAPIWithMocks(testContext, cfg, mockedDataStore, permissions)
 
@@ -98,12 +99,12 @@ func TestSetup(t *testing.T) {
 					So(hasRoute(api.Router, "/topics/{id}", "GET"), ShouldBeTrue)
 					So(hasRoute(api.Router, "/topics/{id}/subtopics", "GET"), ShouldBeTrue)
 					So(hasRoute(api.Router, "/topics/{id}/content", "GET"), ShouldBeTrue)
-					So(hasRoute(api.Router, "/navigation", "GET"), ShouldBeTrue)
+					So(hasRoute(api.Router, "/navigation", "GET"), ShouldBeFalse)
 				})
 			})
 
-			Convey("and when permission auth not enabled", func() {
-				cfg.EnablePermissionsAuth = false
+			Convey("and when app auth token is set", func() {
+				cfg.AppAuthToken = "4946B8C8-77F7-47E2-BABA-B71E0B264A93"
 				api := GetWebAPIWithMocks(testContext, cfg, mockedDataStore, permissions)
 
 				Convey("Then the following routes should have been added", func() {
@@ -112,7 +113,7 @@ func TestSetup(t *testing.T) {
 					So(hasRoute(api.Router, "/topics/{id}", "GET"), ShouldBeTrue)
 					So(hasRoute(api.Router, "/topics/{id}/subtopics", "GET"), ShouldBeTrue)
 					So(hasRoute(api.Router, "/topics/{id}/content", "GET"), ShouldBeTrue)
-					So(hasRoute(api.Router, "/navigation", "GET"), ShouldBeFalse)
+					So(hasRoute(api.Router, "/navigation", "GET"), ShouldBeTrue)
 				})
 			})
 		})
