@@ -52,7 +52,7 @@ func New(cfg *config.Config, serviceList *ExternalServiceList) *Service {
 func (svc *Service) Run(ctx context.Context, buildTime, gitCommit, version string, svcErrors chan error) (err error) {
 
 	// Get MongoDB client
-	svc.mongoDB, err = svc.ServiceList.GetMongoDB(ctx, svc.Config)
+	svc.mongoDB, err = svc.ServiceList.GetMongoDB(ctx, svc.Config.MongoConfig)
 	if err != nil {
 		log.Fatal(ctx, "failed to initialise mongo DB", err)
 		return err
@@ -155,7 +155,7 @@ func (svc *Service) Close(ctx context.Context) error {
 	log.Info(ctx, "commencing graceful shutdown", log.Data{"graceful_shutdown_timeout": timeout})
 	ctx, cancel := context.WithTimeout(ctx, timeout)
 
-	// track shutown gracefully closes up
+	// track shutdown gracefully closes up
 	var hasShutdownError bool
 
 	go func() {

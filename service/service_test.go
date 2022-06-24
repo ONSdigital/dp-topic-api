@@ -33,7 +33,7 @@ var (
 	errHealthcheck = errors.New("healthCheck error")
 )
 
-var funcDoGetMongoDbErr = func(ctx context.Context, cfg *config.Config) (store.MongoDB, error) {
+var funcDoGetMongoDbErr = func(ctx context.Context, cfg config.MongoConfig) (store.MongoDB, error) {
 	return nil, errMongoDB
 }
 
@@ -76,7 +76,7 @@ func TestRun(t *testing.T) {
 			},
 		}
 
-		funcDoGetMongoDbOk := func(ctx context.Context, cfg *config.Config) (store.MongoDB, error) {
+		funcDoGetMongoDbOk := func(ctx context.Context, cfg config.MongoConfig) (store.MongoDB, error) {
 			return mongoDbMock, nil
 		}
 
@@ -290,7 +290,7 @@ func TestClose(t *testing.T) {
 
 			initMock := &mock.InitialiserMock{
 				DoGetHTTPServerFunc: func(bindAddr string, router http.Handler) service.HTTPServer { return serverMock },
-				DoGetMongoDBFunc:    func(ctx context.Context, cfg *config.Config) (store.MongoDB, error) { return mongoDbMock, nil },
+				DoGetMongoDBFunc:    func(ctx context.Context, cfg config.MongoConfig) (store.MongoDB, error) { return mongoDbMock, nil },
 				DoGetHealthCheckFunc: func(cfg *config.Config, buildTime string, gitCommit string, version string) (service.HealthChecker, error) {
 					return hcMock, nil
 				},
@@ -321,7 +321,7 @@ func TestClose(t *testing.T) {
 
 			initMock := &mock.InitialiserMock{
 				DoGetHTTPServerFunc: func(bindAddr string, router http.Handler) service.HTTPServer { return failingserverMock },
-				DoGetMongoDBFunc:    func(ctx context.Context, cfg *config.Config) (store.MongoDB, error) { return mongoDbMock, nil },
+				DoGetMongoDBFunc:    func(ctx context.Context, cfg config.MongoConfig) (store.MongoDB, error) { return mongoDbMock, nil },
 				DoGetHealthCheckFunc: func(cfg *config.Config, buildTime string, gitCommit string, version string) (service.HealthChecker, error) {
 					return hcMock, nil
 				},
@@ -346,7 +346,7 @@ func TestClose(t *testing.T) {
 			timeoutServerMock := &mock.HTTPServerMock{
 				ListenAndServeFunc: func() error { return nil },
 				ShutdownFunc: func(ctx context.Context) error {
-					time.Sleep(2 * time.Millisecond)
+					time.Sleep(5 * time.Millisecond)
 					return nil
 				},
 			}

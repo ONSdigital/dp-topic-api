@@ -3,8 +3,12 @@ package config
 import (
 	"time"
 
+	"github.com/ONSdigital/dp-mongodb/v3/mongodb"
+
 	"github.com/kelseyhightower/envconfig"
 )
+
+type MongoConfig = mongodb.MongoDriverConfig
 
 // Config represents service config for dp-topic-api
 type Config struct {
@@ -15,21 +19,15 @@ type Config struct {
 	ZebedeeURL                 string        `envconfig:"ZEBEDEE_URL"`
 	EnablePrivateEndpoints     bool          `envconfig:"ENABLE_PRIVATE_ENDPOINTS"`
 	EnablePermissionsAuth      bool          `envconfig:"ENABLE_PERMISSIONS_AUTHZ"`
-	MongoConfig                MongoConfig
-}
-
-// MongoConfig contains the config required to connect to MongoDB.
-type MongoConfig struct {
-	BindAddr          string `envconfig:"MONGODB_BIND_ADDR"           json:"-"` // This line contains sensitive data and the json:"-" tells the json marshaller to skip serialising it.
-	Database          string `envconfig:"MONGODB_TOPICS_DATABASE"`
-	Username          string `envconfig:"MONGODB_USERNAME"    json:"-"`
-	Password          string `envconfig:"MONGODB_PASSWORD"    json:"-"`
-	IsSSL             bool   `envconfig:"MONGODB_IS_SSL"`
-	TopicsCollection  string `envconfig:"MONGODB_TOPICS_COLLECTION"`
-	ContentCollection string `envconfig:"MONGODB_CONTENT_COLLECTION"`
+	MongoConfig
 }
 
 var cfg *Config
+
+const (
+	TopicsCollection  = "TopicsCollection"
+	ContentCollection = "ContentCollection"
+)
 
 // Get returns the default config with any modifications through environment
 // variables
@@ -47,13 +45,19 @@ func Get() (*Config, error) {
 		EnablePrivateEndpoints:     true,
 		EnablePermissionsAuth:      false,
 		MongoConfig: MongoConfig{
-			BindAddr:          "localhost:27017",
-			Database:          "topics",
-			TopicsCollection:  "topics",
-			ContentCollection: "content",
-			Username:          "",
-			Password:          "",
-			IsSSL:             false,
+			ClusterEndpoint:               "localhost:27017",
+			Username:                      "",
+			Password:                      "",
+			Database:                      "topics",
+			Collections:                   map[string]string{TopicsCollection: "topics", ContentCollection: "content"},
+			ReplicaSet:                    "",
+			IsStrongReadConcernEnabled:    false,
+			IsWriteConcernMajorityEnabled: true,
+			ConnectTimeout:                5 * time.Second,
+			QueryTimeout:                  15 * time.Second,
+			TLSConnectionConfig: mongodb.TLSConnectionConfig{
+				IsSSL: false,
+			},
 		},
 	}
 

@@ -2,20 +2,21 @@ package steps
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/ONSdigital/dp-component-test/utils"
 	"github.com/ONSdigital/dp-healthcheck/healthcheck"
-	dpMongoDriver "github.com/ONSdigital/dp-mongodb/v3/mongodb"
 	"github.com/ONSdigital/dp-topic-api/config"
 	"github.com/ONSdigital/dp-topic-api/mongo"
 	"github.com/ONSdigital/dp-topic-api/service"
 	serviceMock "github.com/ONSdigital/dp-topic-api/service/mock"
 	"github.com/ONSdigital/dp-topic-api/store"
+	"github.com/ONSdigital/log.go/v2/log"
 	"github.com/cucumber/godog"
 	"github.com/gofrs/uuid"
+
+	mongodriver "github.com/ONSdigital/dp-mongodb/v3/mongodb"
 	"go.mongodb.org/mongo-driver/bson"
 )
 
@@ -29,7 +30,7 @@ type TopicComponent struct {
 	ServiceRunning bool
 }
 
-func NewTopicComponent(mongoFeature *componenttest.MongoFeature, zebedeeURL string) (*TopicComponent, error) {
+func NewTopicComponent(mongoURL, zebedeeURL string) (*TopicComponent, error) {
 
 	f := &TopicComponent{
 		HTTPServer:     &http.Server{},
@@ -38,38 +39,24 @@ func NewTopicComponent(mongoFeature *componenttest.MongoFeature, zebedeeURL stri
 	}
 
 	var err error
-
 	f.Config, err = config.Get()
 	if err != nil {
 		return nil, err
 	}
 
+	f.Config.ClusterEndpoint = mongoURL
 	f.Config.ZebedeeURL = zebedeeURL
+	f.Config.Database = utils.RandomDatabase()
+	f.Config.EnablePrivateEndpoints = false
+	// The following is to reset the Username and Password that have been set is Config from the previous
+	// config.Get()
+	f.Config.Username, f.Config.Password = "", ""
+	f.Config.MongoConfig.Username, f.Config.MongoConfig.Password = createCredsInDB(&f.Config.MongoConfig)
 
-	f.Config.EnablePrivateEndpoints = false // for component tests, ensure 'false' to start
-
-	f.Config.EnablePermissionsAuth = false
-
-	getMongoURI := fmt.Sprintf("localhost:%d", mongoFeature.Server.Port())
-	databaseName := utils.RandomDatabase()
-
-	username, password := createCredsInDB(getMongoURI, databaseName)
-
-	mongodb := &mongo.Mongo{
-		Database:          databaseName,
-		URI:               getMongoURI,
-		Username:          username,
-		Password:          password,
-		TopicsCollection:  f.Config.MongoConfig.TopicsCollection,
-		ContentCollection: f.Config.MongoConfig.ContentCollection,
-		IsSSL:             false,
-	}
-
-	if err := mongodb.Init(context.TODO(), false, true); err != nil {
+	f.MongoClient, err = mongo.NewDBConnection(context.TODO(), f.Config.MongoConfig)
+	if err != nil {
 		return nil, err
 	}
-
-	f.MongoClient = mongodb
 
 	initMock := &serviceMock.InitialiserMock{
 		DoGetMongoDBFunc:     f.DoGetMongoDB,
@@ -82,40 +69,27 @@ func NewTopicComponent(mongoFeature *componenttest.MongoFeature, zebedeeURL stri
 	return f, nil
 }
 
-func createCredsInDB(getMongoURI string, databaseName string) (string, string) {
-	username := "admin"
-	password, _ := uuid.NewV4()
-	mongoConnectionConfig := &dpMongoDriver.MongoConnectionConfig{
-		IsSSL:                   false,
-		ConnectTimeoutInSeconds: 15,
-		QueryTimeoutInSeconds:   15,
-
-		Username:        "",
-		Password:        "",
-		ClusterEndpoint: getMongoURI,
-		Database:        databaseName,
-	}
-	mongoConnection, err := dpMongoDriver.Open(mongoConnectionConfig)
+func createCredsInDB(mongoConfig *mongodriver.MongoDriverConfig) (string, string) {
+	mongoConnection, err := mongodriver.Open(mongoConfig)
 	if err != nil {
 		panic("expected db connection to be opened")
 	}
-	mongoDatabaseSelection := mongoConnection.
-		GetMongoCollection().
-		Database()
-	createCollectionResponse := mongoDatabaseSelection.RunCommand(context.TODO(), bson.D{
-		{"create", "test"},
-	})
-	if createCollectionResponse.Err() != nil {
+
+	username := "admin"
+	password, _ := uuid.NewV4()
+	createCollectionResponse := mongoConnection.RunCommand(context.TODO(), bson.D{{"create", "test"}})
+
+	if createCollectionResponse != nil {
 		panic("expected collection creation to go through")
 	}
-	userCreationResponse := mongoDatabaseSelection.RunCommand(context.TODO(), bson.D{
-		{"createUser", username},
-		{"pwd", password.String()},
-		{"roles", []bson.M{
+	userCreationResponse := mongoConnection.RunCommand(context.TODO(), bson.D{
+		{Key: "createUser", Value: username},
+		{Key: "pwd", Value: password.String()},
+		{Key: "roles", Value: []bson.M{
 			{"role": "root", "db": "admin"},
 		}},
 	})
-	if userCreationResponse.Err() != nil {
+	if userCreationResponse != nil {
 		panic("expected user creation to go through")
 	}
 	return username, password.String()
@@ -127,18 +101,20 @@ func (f *TopicComponent) RegisterSteps(ctx *godog.ScenarioContext) {
 	ctx.Step(`^I have these contents:$`, f.iHaveTheseContents)
 }
 
-func (f *TopicComponent) Reset() *TopicComponent {
-	f.MongoClient.Database = utils.RandomDatabase()
-	f.MongoClient.Init(context.TODO(), false, true)
-	f.Config.EnablePrivateEndpoints = false
-	return f
-}
-
 func (f *TopicComponent) Close() error {
+	ctx := context.Background()
+	err := f.MongoClient.Connection.DropDatabase(ctx)
+	if err != nil {
+		log.Warn(ctx, "error dropping database on Close()", log.Data{"err": err.Error()})
+	}
 	if f.svc != nil && f.ServiceRunning {
-		f.svc.Close(context.Background())
+		err = f.svc.Close(ctx)
+		if err != nil {
+			log.Warn(ctx, "error closing service on Close()", log.Data{"err": err.Error()})
+		}
 		f.ServiceRunning = false
 	}
+
 	return nil
 }
 
@@ -150,7 +126,7 @@ func (f *TopicComponent) InitialiseService() (http.Handler, error) {
 	return f.HTTPServer.Handler, nil
 }
 
-func (f *TopicComponent) DoGetHealthcheckOk(cfg *config.Config, buildTime string, gitCommit string, version string) (service.HealthChecker, error) {
+func (f *TopicComponent) DoGetHealthcheckOk(_ *config.Config, _ string, _ string, _ string) (service.HealthChecker, error) {
 	return &serviceMock.HealthCheckerMock{
 		AddCheckFunc: func(name string, checker healthcheck.Checker) error { return nil },
 		StartFunc:    func(ctx context.Context) {},
@@ -165,6 +141,6 @@ func (f *TopicComponent) DoGetHTTPServer(bindAddr string, router http.Handler) s
 }
 
 // DoGetMongoDB returns a MongoDB
-func (f *TopicComponent) DoGetMongoDB(ctx context.Context, cfg *config.Config) (store.MongoDB, error) {
+func (f *TopicComponent) DoGetMongoDB(_ context.Context, _ config.MongoConfig) (store.MongoDB, error) {
 	return f.MongoClient, nil
 }

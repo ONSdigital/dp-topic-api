@@ -31,16 +31,11 @@ func TestPublishedSubnetEndpointsAreDisabled(t *testing.T) {
 	}
 
 	publishSubnetEndpoints := map[testEndpoint]int{
-		// TODO the following commented out block is for reference usage some time later and will eventually be removed
-		// Dataset Endpoints
-		/*{Method: "POST", URL: "http://localhost:22000/datasets/1234"}:                            http.StatusMethodNotAllowed,
-		{Method: "PUT", URL: "http://localhost:22000/datasets/1234/editions/1234/versions/2123"}: http.StatusMethodNotAllowed,*/
-
 		// Topics endpoints
-		{Method: "GET", URL: "http://localhost:25300/instances"}: http.StatusNotFound,
+		{Method: "GET", URL: "http://localhost:25300/bad-endpoint"}: http.StatusNotFound,
 	}
 
-	Convey("When the API is started with private endpoints disabled", t, func() {
+	Convey("When the API is started with private endpoints disabled and permission auth disabled", t, func() {
 
 		for endpoint, expectedStatusCode := range publishSubnetEndpoints {
 			Convey("The following endpoint "+endpoint.URL+"(Method:"+endpoint.Method+") should return 404", func() {
@@ -50,6 +45,7 @@ func TestPublishedSubnetEndpointsAreDisabled(t *testing.T) {
 				cfg, err := config.Get()
 				So(err, ShouldBeNil)
 				cfg.EnablePrivateEndpoints = false
+				cfg.EnablePermissionsAuth = false
 
 				w := httptest.NewRecorder()
 				mockedDataStore := &storetest.StorerMock{}
@@ -77,7 +73,11 @@ func TestSetup(t *testing.T) {
 
 			Convey("When created the following routes should have been added", func() {
 				So(api, ShouldNotBeNil)
+				So(hasRoute(api.Router, "/topics", "GET"), ShouldBeTrue)
 				So(hasRoute(api.Router, "/topics/{id}", "GET"), ShouldBeTrue)
+				So(hasRoute(api.Router, "/topics/{id}/subtopics", "GET"), ShouldBeTrue)
+				So(hasRoute(api.Router, "/topics/{id}/content", "GET"), ShouldBeTrue)
+				So(hasRoute(api.Router, "/navigation", "GET"), ShouldBeTrue)
 			})
 		})
 
@@ -85,13 +85,19 @@ func TestSetup(t *testing.T) {
 			cfg, err := config.Get()
 			So(err, ShouldBeNil)
 			cfg.EnablePrivateEndpoints = false
+			cfg.EnablePermissionsAuth = true
+
 			mockedDataStore := &storetest.StorerMock{}
 
 			api := GetWebAPIWithMocks(testContext, cfg, mockedDataStore, permissions)
 
-			Convey("When created the following routes should have been added", func() {
+			Convey("Then the following routes should have been added", func() {
 				So(api, ShouldNotBeNil)
+				So(hasRoute(api.Router, "/topics", "GET"), ShouldBeTrue)
 				So(hasRoute(api.Router, "/topics/{id}", "GET"), ShouldBeTrue)
+				So(hasRoute(api.Router, "/topics/{id}/subtopics", "GET"), ShouldBeTrue)
+				So(hasRoute(api.Router, "/topics/{id}/content", "GET"), ShouldBeTrue)
+				So(hasRoute(api.Router, "/navigation", "GET"), ShouldBeTrue)
 			})
 		})
 	})
@@ -101,10 +107,6 @@ func TestSetup(t *testing.T) {
 func GetWebAPIWithMocks(ctx context.Context, cfg *config.Config, mockedDataStore store.Storer, permissions AuthHandler) *API {
 	mu.Lock()
 	defer mu.Unlock()
-	//	urlBuilder := url.NewBuilder("http://example.com")
-
-	//	cfg.ServiceAuthToken = authToken
-	//	cfg.DatasetAPIURL = host
 
 	return Setup(ctx, cfg, mux.NewRouter(), store.DataStore{Backend: mockedDataStore}, permissions)
 }

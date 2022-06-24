@@ -2,6 +2,24 @@ package models
 
 import "github.com/ONSdigital/dp-topic-api/apierrors"
 
+// PrivateSubtopics used for returning both Next and Current document(s) in REST API response
+type PrivateSubtopics struct {
+	Count        int              `bson:"count,omitempty"        json:"count"`
+	Offset       int              `bson:"offset_index,omitempty" json:"offset_index"`
+	Limit        int              `bson:"limit,omitempty"        json:"limit"`
+	TotalCount   int              `bson:"total_count,omitempty"  json:"total_count"`
+	PrivateItems *[]TopicResponse `bson:"items,omitempty"        json:"items"`
+}
+
+// PublicSubtopics used for returning just the Current document(s) in REST API response
+type PublicSubtopics struct {
+	Count       int      `bson:"count,omitempty"        json:"count"`
+	Offset      int      `bson:"offset_index,omitempty" json:"offset_index"`
+	Limit       int      `bson:"limit,omitempty"        json:"limit"`
+	TotalCount  int      `bson:"total_count,omitempty"  json:"total_count"`
+	PublicItems *[]Topic `bson:"items,omitempty"        json:"items"`
+}
+
 // TopicResponse represents an evolving topic with the current topic and the updated topic
 // The 'Next' is what gets updated throughout the publishing journey, and then the 'publish' step copies
 // the 'Next' over the 'Current' document, so that 'Current' is whats always returned in the web view.
@@ -26,24 +44,6 @@ type Topic struct {
 	SubtopicIds []string    `bson:"subtopics_ids,omitempty"  json:"-"`
 }
 
-// TopicWrite is used for component testing
-type TopicWrite struct {
-	ID      string  `bson:"id,omitempty"       json:"id,omitempty"`
-	Next    *TopicW `bson:"next,omitempty"     json:"next,omitempty"`
-	Current *TopicW `bson:"current,omitempty"  json:"current,omitempty"`
-}
-
-// TopicW is used for component testing
-type TopicW struct {
-	ID          string      `bson:"_id,omitempty"            json:"id,omitempty"`
-	Description string      `bson:"description,omitempty"    json:"description,omitempty"`
-	Title       string      `bson:"title,omitempty"          json:"title,omitempty"`
-	Keywords    []string    `bson:"keywords,omitempty"       json:"keywords,omitempty"`
-	State       string      `bson:"state,omitempty"          json:"state,omitempty"`
-	Links       *TopicLinks `bson:"links,omitempty"          json:"links,omitempty"`
-	SubtopicIds []string    `bson:"subtopics_ids,omitempty"  json:"subtopics_ids,omitempty"`
-}
-
 // LinkObject represents a generic structure for all links
 type LinkObject struct {
 	HRef string `bson:"href,omitempty"  json:"href,omitempty"`
@@ -55,24 +55,6 @@ type TopicLinks struct {
 	Self      *LinkObject `bson:"self,omitempty"       json:"self,omitempty"`
 	Subtopics *LinkObject `bson:"subtopics,omitempty"  json:"subtopics,omitempty"`
 	Content   *LinkObject `bson:"content,omitempty"    json:"content,omitempty"`
-}
-
-// PublicSubtopics used for returning just the Current document(s) in REST API response
-type PublicSubtopics struct {
-	Count       int      `bson:"count,omitempty"        json:"count"`
-	Offset      int      `bson:"offset_index,omitempty" json:"offset_index"`
-	Limit       int      `bson:"limit,omitempty"        json:"limit"`
-	TotalCount  int      `bson:"total_count,omitempty"  json:"total_count"`
-	PublicItems *[]Topic `bson:"items,omitempty"        json:"items"`
-}
-
-// PrivateSubtopics used for returning both Next and Current document(s) in REST API response
-type PrivateSubtopics struct {
-	Count        int              `bson:"count,omitempty"        json:"count"`
-	Offset       int              `bson:"offset_index,omitempty" json:"offset_index"`
-	Limit        int              `bson:"limit,omitempty"        json:"limit"`
-	TotalCount   int              `bson:"total_count,omitempty"  json:"total_count"`
-	PrivateItems *[]TopicResponse `bson:"items,omitempty"        json:"items"`
 }
 
 // Validate checks that a topic struct complies with the state constraints, if provided. TODO may want to add more in future

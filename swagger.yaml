@@ -25,6 +25,12 @@ parameters:
     in: query
     required: false
     type: string
+  lang:
+    name: lang
+    description: "the 2 character code of the language required in returned labels, e.g. cy for welsh"
+    in: query
+    type: string
+    required: false
 paths:
   /topics/{id}:
     get:
@@ -86,16 +92,35 @@ paths:
           description: "Content not found"
         500:
           $ref: '#/responses/InternalError'
+  /navigation:
+    get:
+      tags:
+        - "Public"
+      summary: "Get a list for navigation"
+      description: "Get a list of topics for site navigation"
+      produces:
+        - "application/json"
+      parameters:
+        - $ref: '#/parameters/lang'
+      responses:
+        200:
+          description: "Provides a hierarchical list of navigation items with their links, copy and localisation references"
+          schema:
+            $ref: '#/definitions/Navigation'
+        500:
+          $ref: '#/responses/InternalError'
 responses:
   InternalError:
     description: "Failed to process the request due to an internal error"
+  Unauthorised:
+    description: "Failed to process the request due to being unauthorised"
 definitions:
   Content:
     type: object
     properties:
       title:
         type: string
-        description: "ttitle of the information"
+        description: "title of the information"
       type:
         type: string
         description: "Name of the containing type"
@@ -217,3 +242,75 @@ definitions:
   Offset:
     type: integer
     description: "The offset applied to the number of results returned"
+  Description:
+    type: string
+    description: "A human-readable description as a string"
+  Name:
+    type: string
+    description: "A hyphenated reference to the item"
+  Label:
+    type: string
+    description: "The label to be displayed to a user, translated based on the lang parameter"
+  Title:
+    type: string
+    description: "A string containing the title of something"
+  Uri:
+    type: string
+    description: "The path to the resource on the web domain"
+  Navigation:
+    type: object
+    description: "Resource describing the structure for the ONS website navbar."
+    properties:
+      description:
+        type: string
+      links:
+        type: object
+        properties:
+          self:
+            type: object
+            properties:
+              href:
+                type: string
+                description: "The URL to the resource"
+      items:
+        $ref: '#/definitions/ListOfNavigationItems'
+  ListOfNavigationItems:
+    type: array
+    description: "A list of navigation items"
+    items:
+      type: object
+      properties:
+        description:
+          $ref: '#/definitions/Description'
+        label:
+          $ref: '#/definitions/Label'
+        links:
+          type: object
+          properties:
+            self:
+              $ref: '#/definitions/SelfHref'
+        name:
+          $ref: '#/definitions/Name'
+        title:
+          $ref: '#/definitions/Title'
+        uri:
+          $ref: '#/definitions/Uri'
+        subtopics:
+          type: array
+          items:
+            properties:
+              description:
+                $ref: '#/definitions/Description'
+              label:
+                $ref: '#/definitions/Label'
+              links:
+                type: object
+                properties:
+                  self:
+                    $ref: '#/definitions/SelfHref'
+              name:
+                $ref: '#/definitions/Name'
+              title:
+                $ref: '#/definitions/Title'
+              uri:
+                $ref: '#/definitions/Uri'
