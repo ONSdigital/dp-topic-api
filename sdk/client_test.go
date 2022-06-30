@@ -343,7 +343,7 @@ func TestGetNavigationPublic(t *testing.T) {
 		topicAPIClient := newTopicAPIClient(t, httpClient)
 
 		Convey("When GetNavigationPublic is called", func() {
-			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: English})
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, "en")
 
 			Convey("Then the expected navigation items are returned", func() {
 				So(*respNavigation, ShouldResemble, testPublicNavigation)
@@ -361,7 +361,7 @@ func TestGetNavigationPublic(t *testing.T) {
 		})
 
 		Convey("When GetNavigationPublic is called with lang query param", func() {
-			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: Welsh})
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, "cy")
 
 			Convey("Then the expected navigation items are returned", func() {
 				So(*respNavigation, ShouldResemble, testPublicNavigation)
@@ -384,7 +384,7 @@ func TestGetNavigationPublic(t *testing.T) {
 		topicAPIClient := newTopicAPIClient(t, httpClient)
 
 		Convey("When GetNavigationPublic is called", func() {
-			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: English})
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, "en")
 
 			Convey("Then an error should be returned ", func() {
 				So(err, ShouldNotBeNil)
@@ -409,7 +409,7 @@ func TestGetNavigationPublic(t *testing.T) {
 		topicAPIClient := newTopicAPIClient(t, httpClient)
 
 		Convey("When GetNavigationPublic is called", func() {
-			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: English})
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, "en")
 
 			Convey("Then an error should be returned ", func() {
 				So(err, ShouldNotBeNil)

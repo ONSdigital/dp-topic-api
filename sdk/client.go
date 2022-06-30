@@ -113,8 +113,8 @@ func (cli *Client) GetSubtopicsPublic(ctx context.Context, reqHeaders Headers, i
 }
 
 // GetNavigationPublic gets the public list of navigation items
-func (cli *Client) GetNavigationPublic(ctx context.Context, reqHeaders Headers, options Options) (*models.Navigation, error) {
-	path := fmt.Sprintf("%s/navigation?lang=%s", cli.hcCli.URL, options.Lang)
+func (cli *Client) GetNavigationPublic(ctx context.Context, reqHeaders Headers, lang string) (*models.Navigation, error) {
+	path := fmt.Sprintf("%s/navigation?lang=%s", cli.hcCli.URL, lang)
 
 	b, err := cli.callTopicAPI(ctx, path, http.MethodGet, reqHeaders, nil)
 	if err != nil {
