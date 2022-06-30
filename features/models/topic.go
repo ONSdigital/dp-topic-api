@@ -11,7 +11,7 @@ type TopicWrite struct {
 
 // TopicW is used for component testing
 type TopicW struct {
-	ID          string             `bson:"_id,omitempty"            json:"id,omitempty"`
+	ID          string             `bson:"id,omitempty"             json:"id,omitempty"`
 	Description string             `bson:"description,omitempty"    json:"description,omitempty"`
 	Title       string             `bson:"title,omitempty"          json:"title,omitempty"`
 	Keywords    []string           `bson:"keywords,omitempty"       json:"keywords,omitempty"`

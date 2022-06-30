@@ -19,3 +19,16 @@ type Clienter interface {
 	Health() *healthcheck.Client
 	URL() string
 }
+
+type Languages string
+
+const (
+	English Languages = "en"
+	Welsh   Languages = "cy"
+)
+
+type Options struct {
+	Offset int
+	Limit  int
+	Lang   Languages
+}

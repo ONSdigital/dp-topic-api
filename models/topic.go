@@ -35,7 +35,7 @@ type TopicResponse struct {
 // response in its own right depending upon request being in publish or web and also authentication.
 // Subtopics contains TopicResonse ID(s).
 type Topic struct {
-	ID          string      `bson:"_id,omitempty"            json:"id,omitempty"`
+	ID          string      `bson:"id,omitempty"             json:"id,omitempty"`
 	Description string      `bson:"description,omitempty"    json:"description,omitempty"`
 	Title       string      `bson:"title,omitempty"          json:"title,omitempty"`
 	Keywords    []string    `bson:"keywords,omitempty"       json:"keywords,omitempty"`

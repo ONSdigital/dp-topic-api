@@ -49,6 +49,22 @@ var (
 		Keywords:    []string{"test"},
 		State:       "published",
 	}
+
+	testPublicNavigation = models.Navigation{
+		Description: "Descriptiontest1",
+		Links:       nil,
+		Items: &[]models.TopicNonReferential{
+			{
+				Description:   "Descriptiontest2",
+				Label:         "labeltest",
+				Links:         &models.TopicLinks{},
+				Name:          "nametest",
+				SubtopicItems: &[]models.TopicNonReferential{},
+				Title:         "titletest",
+				Uri:           "uritest",
+			},
+		},
+	}
 )
 
 func newMockHTTPClient(r *http.Response, err error) *dphttp.ClienterMock {
@@ -300,6 +316,111 @@ func TestGetSubtopicsPublic(t *testing.T) {
 						doCalls := httpClient.DoCalls()
 						So(doCalls, ShouldHaveLength, 1)
 						So(doCalls[0].Req.URL.Path, ShouldEqual, "/topics/1357/subtopics")
+					})
+				})
+			})
+		})
+	})
+}
+
+func TestGetNavigationPublic(t *testing.T) {
+	t.Parallel()
+	ctx := context.Background()
+
+	Convey("Given public subtopics is returned successfully", t, func() {
+		body, err := json.Marshal(testPublicNavigation)
+		if err != nil {
+			t.Errorf("failed to setup test data, error: %v", err)
+		}
+
+		httpClient := newMockHTTPClient(
+			&http.Response{
+				StatusCode: http.StatusOK,
+				Body:       io.NopCloser(bytes.NewReader(body)),
+			},
+			nil)
+
+		topicAPIClient := newTopicAPIClient(t, httpClient)
+
+		Convey("When GetNavigationPublic is called", func() {
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: English})
+
+			Convey("Then the expected navigation items are returned", func() {
+				So(*respNavigation, ShouldResemble, testPublicNavigation)
+
+				Convey("And no error is returned", func() {
+					So(err, ShouldBeNil)
+
+					Convey("And client.Do should be called once with the expected parameters", func() {
+						doCalls := httpClient.DoCalls()
+						So(doCalls, ShouldHaveLength, 1)
+						So(doCalls[0].Req.URL.Path, ShouldEqual, "/navigation")
+					})
+				})
+			})
+		})
+
+		Convey("When GetNavigationPublic is called with lang query param", func() {
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: Welsh})
+
+			Convey("Then the expected navigation items are returned", func() {
+				So(*respNavigation, ShouldResemble, testPublicNavigation)
+
+				Convey("And no error is returned", func() {
+					So(err, ShouldBeNil)
+
+					Convey("And client.Do should be called once with the expected parameters", func() {
+						doCalls := httpClient.DoCalls()
+						So(doCalls, ShouldHaveLength, 1)
+						So(doCalls[0].Req.URL.Query().Get("lang"), ShouldEqual, "cy")
+					})
+				})
+			})
+		})
+	})
+
+	Convey("Given a 500 response from topic api", t, func() {
+		httpClient := newMockHTTPClient(&http.Response{StatusCode: http.StatusInternalServerError}, nil)
+		topicAPIClient := newTopicAPIClient(t, httpClient)
+
+		Convey("When GetNavigationPublic is called", func() {
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: English})
+
+			Convey("Then an error should be returned ", func() {
+				So(err, ShouldNotBeNil)
+
+				Convey("And the expected public navigation items should be nil", func() {
+					So(respNavigation, ShouldBeNil)
+
+					Convey("And client.Do should be called once with the expected parameters", func() {
+						doCalls := httpClient.DoCalls()
+						So(doCalls, ShouldHaveLength, 1)
+						So(doCalls[0].Req.URL.Path, ShouldEqual, "/navigation")
+					})
+				})
+			})
+		})
+	})
+
+	Convey("Given the client returns an unexpected error", t, func() {
+		clientError := errors.New("unexpected error")
+		httpClient := newMockHTTPClient(&http.Response{}, clientError)
+
+		topicAPIClient := newTopicAPIClient(t, httpClient)
+
+		Convey("When GetNavigationPublic is called", func() {
+			respNavigation, err := topicAPIClient.GetNavigationPublic(ctx, Headers{}, Options{Lang: English})
+
+			Convey("Then an error should be returned ", func() {
+				So(err, ShouldNotBeNil)
+
+				Convey("And the expected public subtopics should be nil", func() {
+					So(respNavigation, ShouldBeNil)
+
+					Convey("And client.Do should be called once with the expected parameters", func() {
+						doCalls := httpClient.DoCalls()
+						So(doCalls, ShouldHaveLength, 1)
+						So(doCalls[0].Req.URL.Path, ShouldEqual, "/navigation")
 					})
 				})
 			})
