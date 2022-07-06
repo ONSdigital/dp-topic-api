@@ -15,7 +15,8 @@ type StatusError struct {
 	Err  error
 }
 
-// Allows StatusError to satisfy the error interface.
+// Allows StatusError to satisfy the error interface. If error is nil, then
+// the word "nil" is returned
 func (e StatusError) Error() string {
 	if e.Err == nil {
 		return "nil"

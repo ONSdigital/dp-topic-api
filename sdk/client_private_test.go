@@ -64,7 +64,7 @@ func TestGetRootTopicsPrivate(t *testing.T) {
 				So(*respRootTopics, ShouldResemble, testPrivateTopics)
 
 				Convey("And no error is returned", func() {
-					So(err, ShouldBeNil)
+					So(err.Error(), ShouldEqual, "nil")
 
 					Convey("And client.Do should be called once with the expected parameters", func() {
 						doCalls := httpClient.DoCalls()
@@ -155,7 +155,7 @@ func TestGetSubtopicsPrivate(t *testing.T) {
 				So(*respSubtopics, ShouldResemble, testPrivateTopics)
 
 				Convey("And no error is returned", func() {
-					So(err, ShouldBeNil)
+					So(err.Error(), ShouldEqual, "nil")
 
 					Convey("And client.Do should be called once with the expected parameters", func() {
 						doCalls := httpClient.DoCalls()

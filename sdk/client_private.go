@@ -15,7 +15,7 @@ func (cli *Client) GetRootTopicsPrivate(ctx context.Context, reqHeaders Headers)
 	path := fmt.Sprintf("%s/topics", cli.hcCli.URL)
 
 	b, apiErr := cli.callTopicAPI(ctx, path, http.MethodGet, reqHeaders, nil)
-	if apiErr != nil {
+	if apiErr.Error() != "nil" {
 		return nil, apiErr
 	}
 
@@ -28,7 +28,10 @@ func (cli *Client) GetRootTopicsPrivate(ctx context.Context, reqHeaders Headers)
 		}
 	}
 
-	return &rootTopics, nil
+	return &rootTopics, apiError.StatusError{
+		Err:  nil,
+		Code: apiErr.Status(),
+	}
 }
 
 // GetSubtopicsPrivate gets the private list of subtopics of a topic for Publishing which returns both Next and Current document(s) in the response
@@ -36,7 +39,7 @@ func (cli *Client) GetSubtopicsPrivate(ctx context.Context, reqHeaders Headers, 
 	path := fmt.Sprintf("%s/topics/%s/subtopics", cli.hcCli.URL, id)
 
 	b, apiErr := cli.callTopicAPI(ctx, path, http.MethodGet, reqHeaders, nil)
-	if apiErr != nil {
+	if apiErr.Error() != "nil" {
 		return nil, apiErr
 	}
 
@@ -49,5 +52,8 @@ func (cli *Client) GetSubtopicsPrivate(ctx context.Context, reqHeaders Headers, 
 		}
 	}
 
-	return &subtopics, nil
+	return &subtopics, apiError.StatusError{
+		Err:  nil,
+		Code: apiErr.Status(),
+	}
 }

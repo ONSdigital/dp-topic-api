@@ -175,7 +175,7 @@ func TestGetRootTopicsPublic(t *testing.T) {
 				So(*respRootTopics, ShouldResemble, testPublicTopics)
 
 				Convey("And no error is returned", func() {
-					So(err, ShouldBeNil)
+					So(err.Error(), ShouldEqual, "nil")
 
 					Convey("And client.Do should be called once with the expected parameters", func() {
 						doCalls := httpClient.DoCalls()
@@ -264,7 +264,7 @@ func TestGetSubtopicsPublic(t *testing.T) {
 				So(*respSubtopics, ShouldResemble, testPublicTopics)
 
 				Convey("And no error is returned", func() {
-					So(err, ShouldBeNil)
+					So(err.Error(), ShouldEqual, "nil")
 
 					Convey("And client.Do should be called once with the expected parameters", func() {
 						doCalls := httpClient.DoCalls()
@@ -353,7 +353,7 @@ func TestGetNavigationPublic(t *testing.T) {
 				So(*respNavigation, ShouldResemble, testPublicNavigation)
 
 				Convey("And no error is returned", func() {
-					So(err, ShouldBeNil)
+					So(err.Error(), ShouldEqual, "nil")
 
 					Convey("And client.Do should be called once with the expected parameters", func() {
 						doCalls := httpClient.DoCalls()
@@ -371,7 +371,7 @@ func TestGetNavigationPublic(t *testing.T) {
 				So(*respNavigation, ShouldResemble, testPublicNavigation)
 
 				Convey("And no error is returned", func() {
-					So(err, ShouldBeNil)
+					So(err.Error(), ShouldEqual, "nil")
 
 					Convey("And client.Do should be called once with the expected parameters", func() {
 						doCalls := httpClient.DoCalls()

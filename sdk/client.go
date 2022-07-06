@@ -58,7 +58,7 @@ func (cli *Client) GetRootTopicsPublic(ctx context.Context, reqHeaders Headers) 
 	path := fmt.Sprintf("%s/topics", cli.hcCli.URL)
 
 	b, apiErr := cli.callTopicAPI(ctx, path, http.MethodGet, reqHeaders, nil)
-	if apiErr != nil {
+	if apiErr.Error() != "nil" {
 		return nil, apiErr
 	}
 
@@ -71,7 +71,10 @@ func (cli *Client) GetRootTopicsPublic(ctx context.Context, reqHeaders Headers) 
 		}
 	}
 
-	return &rootTopics, nil
+	return &rootTopics, apiError.StatusError{
+		Err:  nil,
+		Code: apiErr.Status(),
+	}
 }
 
 // GetSubtopicsPublic gets the public list of subtopics of a topic for Web which returns the Current document(s) in the response
@@ -79,7 +82,7 @@ func (cli *Client) GetSubtopicsPublic(ctx context.Context, reqHeaders Headers, i
 	path := fmt.Sprintf("%s/topics/%s/subtopics", cli.hcCli.URL, id)
 
 	b, apiErr := cli.callTopicAPI(ctx, path, http.MethodGet, reqHeaders, nil)
-	if apiErr != nil {
+	if apiErr.Error() != "nil" {
 		return nil, apiErr
 	}
 
@@ -92,7 +95,10 @@ func (cli *Client) GetSubtopicsPublic(ctx context.Context, reqHeaders Headers, i
 		}
 	}
 
-	return &subtopics, nil
+	return &subtopics, apiError.StatusError{
+		Err:  nil,
+		Code: apiErr.Status(),
+	}
 }
 
 // GetNavigationPublic gets the public list of navigation items
@@ -107,7 +113,7 @@ func (cli *Client) GetNavigationPublic(ctx context.Context, reqHeaders Headers, 
 	path := fmt.Sprintf("%s/navigation?lang=%s", cli.hcCli.URL, lang)
 
 	b, apiErr := cli.callTopicAPI(ctx, path, http.MethodGet, reqHeaders, nil)
-	if apiErr != nil {
+	if apiErr.Error() != "nil" {
 		return nil, apiErr
 	}
 
@@ -120,7 +126,10 @@ func (cli *Client) GetNavigationPublic(ctx context.Context, reqHeaders Headers, 
 		}
 	}
 
-	return &navigation, nil
+	return &navigation, apiError.StatusError{
+		Err:  nil,
+		Code: apiErr.Status(),
+	}
 }
 
 // callTopicAPI calls the Topic API endpoint given by path for the provided REST method, request headers, and body payload.
@@ -180,7 +189,10 @@ func (cli *Client) callTopicAPI(ctx context.Context, path, method string, header
 	}
 
 	if resp.Body == nil {
-		return nil, nil
+		return nil, apiError.StatusError{
+			Err:  nil,
+			Code: resp.StatusCode,
+		}
 	}
 
 	b, err := io.ReadAll(resp.Body)
@@ -191,7 +203,10 @@ func (cli *Client) callTopicAPI(ctx context.Context, path, method string, header
 		}
 	}
 
-	return b, nil
+	return b, apiError.StatusError{
+		Err:  nil,
+		Code: resp.StatusCode,
+	}
 }
 
 // closeResponseBody closes the response body and logs an error if unsuccessful
@@ -205,5 +220,7 @@ func closeResponseBody(resp *http.Response) apiError.Error {
 		}
 	}
 
-	return nil
+	return apiError.StatusError{
+		Err: nil,
+	}
 }
