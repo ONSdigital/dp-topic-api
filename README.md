@@ -10,7 +10,7 @@ Enables greater flexibility in creating journeys through the website
 ### Dependencies
 
 * Mongo db (can use [dp-compose](https://github.com/ONSdigital/dp-compose) to stand up an instance in docker container, this requires docker)
-* Once you have a working mongo db instance, you will want to populate your database with topics; **TODO** further instructions/scripts needed
+* Once you have a working mongo db instance, you will want to populate your database with topics - see `./db/README.md` for an example approach that adds census topics
 * No further dependencies other than those defined in `go.mod`
 
 ### Configuration
