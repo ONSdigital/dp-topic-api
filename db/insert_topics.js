@@ -1,5 +1,4 @@
 const idSize = 4;
-const rootId = 'topic_root';
 const idAlphabet = '123456789';
 
 if (typeof (cfg) == 'undefined') {
@@ -133,7 +132,7 @@ function createTopLevelTopic(topicData) {
   print('New root topic');
   print(JSON.stringify(rootTopic));
 
-  // Create census subtopics
+  // Create subtopics
   topicData.subtopics.forEach((subtopic) => {
     const topic = createTopic(subtopic.title, subtopic.description);
     const content = createContent(topic.id);
@@ -141,7 +140,7 @@ function createTopLevelTopic(topicData) {
     insertTopic(topic);
     insertContent(content);
 
-    // Add subtopic to Census topic
+    // Add subtopic to top level topic
     topLevelTopic.next.subtopics_ids.push(topic.id);
     topLevelTopic.current.subtopics_ids.push(topic.id);
   });
