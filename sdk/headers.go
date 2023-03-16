@@ -8,8 +8,8 @@ import (
 )
 
 type Headers struct {
-	ServiceAuthToken string
-	UserAuthToken    string
+	ServiceAuthToken string `json:"-"`
+	UserAuthToken    string `json:"-"`
 }
 
 func (h *Headers) Add(req *http.Request) error {
