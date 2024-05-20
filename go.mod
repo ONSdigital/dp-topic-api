@@ -7,6 +7,8 @@ replace github.com/spf13/cobra => github.com/spf13/cobra v1.4.0
 // to fix: [CVE-2023-32731] CWE-Other
 replace google.golang.org/grpc => google.golang.org/grpc v1.55.0
 
+replace google.golang.org/protobuf v1.30.0 => google.golang.org/protobuf v1.33.0
+
 require (
 	github.com/ONSdigital/dp-api-clients-go/v2 v2.254.0
 	github.com/ONSdigital/dp-authorisation v0.2.1
