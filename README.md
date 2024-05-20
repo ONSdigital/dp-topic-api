@@ -41,6 +41,8 @@ Any data issues in any of the ONS environments, please visit [dp-operations](htt
 
 - [Updating Release Date and Publishing Topic Guide](https://github.com/ONSdigital/dp-operations/blob/main/data-fixes/update-topic-release-date.md#update-topic-release-date)
 
+[Update Topic slug](https://github.com/ONSdigital/dp-operations/blob/main/data-fixes/add-slug-to-topics.md)
+
 ### Contributing
 
 See [CONTRIBUTING](CONTRIBUTING.md) for details.
