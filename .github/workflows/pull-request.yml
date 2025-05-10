@@ -1,0 +1,63 @@
+on:
+  pull_request:
+    types: [opened, reopened]
+
+jobs:
+  new_pull_request:
+    runs-on: ubuntu-latest
+    name: Dump GitHub context
+    env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+    steps:
+      - name: Post to a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          channel-id: "automation-test" #this should be env var
+          payload: |
+            {
+              "text": "New PR opened: *<${{github.event.pull_request.html_url}}|${{github.event.pull_request.html_url}}>*",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "New PR opened: *<${{github.event.pull_request.html_url}}|${{github.event.pull_request.html_url}}>*"
+                  }
+                },
+                {
+                  "type": "section",
+                  "fields": [
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Author:*\n${{github.event.pull_request.user.login}}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*State:*\n${{github.event.pull_request.state}}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Title:*\n${{github.event.pull_request.title}}"
+                    },
+                    {
+                      "type": "mrkdwn",
+                      "text": "*Files Changed:*\n${{github.event.pull_request.changed_files}}"
+                    }
+                  ]
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      - name: Store ts in file
+        run: |
+          echo ${{ steps.slack.outputs.ts }} > pr_vars.txt
+      - name: Upload ts for PR request message
+        uses: actions/upload-artifact@v4
+        with:
+          name: SLACK_PR_${{ github.event.pull_request.number }}
+          path: pr_vars.txt
+
+
+
