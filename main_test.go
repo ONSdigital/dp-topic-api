@@ -24,7 +24,11 @@ type ComponentTest struct {
 
 func (f *ComponentTest) InitializeScenario(ctx *godog.ScenarioContext) {
 	authorizationFeature := componenttest.NewAuthorizationFeature()
-	topicComponent, err := steps.NewTopicComponent(f.MongoFeature.Server.URI(), authorizationFeature.FakeAuthService.ResolveURL(""))
+	mongoURI, err := f.MongoFeature.GetConnectionString()
+	if err != nil {
+		panic(err)
+	}
+	topicComponent, err := steps.NewTopicComponent(mongoURI, authorizationFeature.FakeAuthService.ResolveURL(""))
 	if err != nil {
 		panic(err)
 	}

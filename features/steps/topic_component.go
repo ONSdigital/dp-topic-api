@@ -3,6 +3,7 @@ package steps
 import (
 	"context"
 	"net/http"
+	"net/url"
 
 	componenttest "github.com/ONSdigital/dp-component-test"
 	"github.com/ONSdigital/dp-component-test/utils"
@@ -44,7 +45,13 @@ func NewTopicComponent(mongoURL, zebedeeURL string) (*TopicComponent, error) {
 		return nil, err
 	}
 
-	f.Config.ClusterEndpoint = mongoURL
+	// Extract host:port from the MongoDB URI
+	parsedURI, err := url.Parse(mongoURL)
+	if err != nil {
+		return nil, err
+	}
+	hostAndPort := parsedURI.Host
+	f.Config.ClusterEndpoint = hostAndPort
 	f.Config.ZebedeeURL = zebedeeURL
 	f.Config.Database = utils.RandomDatabase()
 	f.Config.EnablePrivateEndpoints = false
