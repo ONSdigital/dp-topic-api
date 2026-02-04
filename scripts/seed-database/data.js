@@ -26,4 +26,15 @@ const seedTopics = [
       { title: 'Veterans', description: 'Facts and figures to help understand the veteran population of England and Wales, including topics such as housing, education, employment and skills.' },
     ],
   },
+  {
+    title: 'Employment and labour market',
+    description: 'People in and out of work covering employment, unemployment, types of work, earnings, working patterns and workplace disputes.',
+    subtopics: [
+      { title: 'People in work',
+        description: 'Employment data covering employment rates, hours of work, claimants and earnings.',
+        subtopics: { title: 'Workplace disputes and working conditions', description: 'Work stoppages because of disputes between employers and employees. Includes strikes and lock-outs, number of days lost in the public and private sectors, and number of workers involved.', },
+      },
+      { title: 'People not in work', description: 'Unemployed and economically inactive people in the UK including claimants of out-of-work benefits and the number of redundancies.', },
+    ],
+  }
 ]
