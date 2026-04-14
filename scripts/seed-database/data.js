@@ -32,7 +32,12 @@ const seedTopics = [
     subtopics: [
       { title: 'People in work',
         description: 'Employment data covering employment rates, hours of work, claimants and earnings.',
-        subtopics: { title: 'Workplace disputes and working conditions', description: 'Work stoppages because of disputes between employers and employees. Includes strikes and lock-outs, number of days lost in the public and private sectors, and number of workers involved.', },
+        subtopics: [
+          {
+            title: 'Workplace disputes and working conditions',
+            description: 'Work stoppages because of disputes between employers and employees. Includes strikes and lock-outs, number of days lost in the public and private sectors, and number of workers involved.',
+          },
+        ],
       },
       { title: 'People not in work', description: 'Unemployed and economically inactive people in the UK including claimants of out-of-work benefits and the number of redundancies.', },
     ],

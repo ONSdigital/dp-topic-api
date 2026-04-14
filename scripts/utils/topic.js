@@ -54,12 +54,14 @@ function createTopic(parentID, topicData, topicID) {
     });
   }
 
-  insertTopic(topic);
+  const inserted = insertTopic(topic);
 
   const content = generateContent(topic.id);
   insertContent(content);
 
-  addSubtopic(parentID, topic.id);
+  if (inserted) {
+    addSubtopic(parentID, topic.id);
+  }
 }
 
 /**
@@ -135,14 +137,18 @@ function insertTopic(topic) {
     if (cfg.insert) {
       try {
         getTopicCollection().insertOne(topic);
+        return true;
       } catch (err) {
         console.log(err);
+        return false;
       }
     }
+    return false;
   } else {
     console.warn(
       `topic with slug ${topic.next.slug} or id ${topic.id} already exists`
     );
+    return false;
   }
 }
 
