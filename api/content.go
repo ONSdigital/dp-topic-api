@@ -16,9 +16,9 @@ func (api *API) getContentPublicHandler(w http.ResponseWriter, req *http.Request
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
+		logKeyReqID:  ctx.Value(dprequest.RequestIdKey),
 		"content_id": id,
-		"function":   "getContentPublicHandler",
+		logKeyFunc:   "getContentPublicHandler",
 	}
 
 	// get type from query parameters, or default value
@@ -70,9 +70,9 @@ func (api *API) getContentPrivateHandler(w http.ResponseWriter, req *http.Reques
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
+		logKeyReqID:  ctx.Value(dprequest.RequestIdKey),
 		"content_id": id,
-		"function":   "getContentPrivateHandler",
+		logKeyFunc:   "getContentPrivateHandler",
 	}
 
 	// get type from query parameters, or default value

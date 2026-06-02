@@ -16,9 +16,9 @@ func (api *API) getRootTopicsPrivateHandler(w http.ResponseWriter, req *http.Req
 	ctx := req.Context()
 	const id = "topic_root" // access specific document to retrieve list
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
-		"topic_id":   id,
-		"function":   "getTopicsListPrivateHandler",
+		logKeyReqID:   ctx.Value(dprequest.RequestIdKey),
+		logKeyTopicID: id,
+		logKeyFunc:    "getTopicsListPrivateHandler",
 	}
 
 	// The mongo document with id: `topic_root` contains the list of subtopics,
@@ -32,9 +32,9 @@ func (api *API) getTopicPrivateHandler(w http.ResponseWriter, req *http.Request)
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
-		"topic_id":   id,
-		"function":   "getTopicPrivateHandler",
+		logKeyReqID:   ctx.Value(dprequest.RequestIdKey),
+		logKeyTopicID: id,
+		logKeyFunc:    "getTopicPrivateHandler",
 	}
 
 	// get topic from mongoDB by id
@@ -58,9 +58,9 @@ func (api *API) getSubtopicsPrivateHandler(w http.ResponseWriter, req *http.Requ
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
-		"topic_id":   id,
-		"function":   "getSubtopicsPrivateHandler",
+		logKeyReqID:   ctx.Value(dprequest.RequestIdKey),
+		logKeyTopicID: id,
+		logKeyFunc:    "getSubtopicsPrivateHandler",
 	}
 
 	api.getSubtopicsPrivateByID(ctx, id, logdata, w)
@@ -123,8 +123,8 @@ func (api *API) putTopicReleaseDatePrivateHandler(w http.ResponseWriter, req *ht
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"topic_id": id,
-		"function": "putTopicReleaseDatePrivateHandler",
+		logKeyTopicID: id,
+		logKeyFunc:    "putTopicReleaseDatePrivateHandler",
 	}
 
 	topicRelease, err := models.ReadReleaseDate(req.Body)
@@ -156,9 +156,9 @@ func (api *API) putTopicStatePrivateHandler(w http.ResponseWriter, req *http.Req
 	id := vars["id"]
 	state := vars["state"]
 	logdata := log.Data{
-		"topic_id": id,
-		"state":    state,
-		"function": "putTopicStatePrivateHandler",
+		logKeyTopicID: id,
+		"state":       state,
+		logKeyFunc:    "putTopicStatePrivateHandler",
 	}
 
 	_, err := models.ParseState(state)
@@ -190,8 +190,8 @@ func (api *API) putTopicPrivateHandler(w http.ResponseWriter, req *http.Request)
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"topic_id": id,
-		"function": "putTopicPrivateHandler",
+		logKeyTopicID: id,
+		logKeyFunc:    "putTopicPrivateHandler",
 	}
 
 	topicUpdate, err := models.ReadTopicUpdate(req.Body)

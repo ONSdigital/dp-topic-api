@@ -19,6 +19,11 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 )
 
+const (
+	paramID = "id"
+	opSet   = "$set"
+)
+
 type Mongo struct {
 	mongodriver.MongoDriverConfig
 
@@ -61,7 +66,7 @@ func (m *Mongo) Checker(ctx context.Context, state *healthcheck.CheckState) erro
 func (m *Mongo) GetTopic(ctx context.Context, id string) (*models.TopicResponse, error) {
 	var topic models.TopicResponse
 
-	err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).FindOne(ctx, bson.M{"id": id}, &topic)
+	err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).FindOne(ctx, bson.M{paramID: id}, &topic)
 	if err != nil {
 		if errors.Is(err, mongodriver.ErrNoDocumentFound) {
 			return nil, errs.ErrTopicNotFound
@@ -74,7 +79,7 @@ func (m *Mongo) GetTopic(ctx context.Context, id string) (*models.TopicResponse,
 
 // CheckTopicExists checks that the topic exists
 func (m *Mongo) CheckTopicExists(ctx context.Context, id string) error {
-	count, err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).Count(ctx, bson.M{"id": id})
+	count, err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).Count(ctx, bson.M{paramID: id})
 	if err != nil {
 		return err
 	}
@@ -136,7 +141,7 @@ func (m *Mongo) GetContent(ctx context.Context, id string, queryTypeFlags int) (
 		contentSelect["current.timeseries"] = 1
 	}
 
-	err := m.Connection.Collection(m.ActualCollectionName(config.ContentCollection)).FindOne(ctx, bson.M{"id": id}, &content, mongodriver.Projection(contentSelect))
+	err := m.Connection.Collection(m.ActualCollectionName(config.ContentCollection)).FindOne(ctx, bson.M{paramID: id}, &content, mongodriver.Projection(contentSelect))
 	if err != nil {
 		if errors.Is(err, mongodriver.ErrNoDocumentFound) {
 			return nil, errs.ErrContentNotFound
@@ -149,9 +154,9 @@ func (m *Mongo) GetContent(ctx context.Context, id string, queryTypeFlags int) (
 
 // UpdateReleaseDate update releaseDate of document by its topic ID
 func (m *Mongo) UpdateReleaseDate(ctx context.Context, id string, releaseDate time.Time) error {
-	selector := bson.M{"id": id}
+	selector := bson.M{paramID: id}
 	update := bson.M{
-		"$set": bson.M{"next.release_date": releaseDate, "next.last_updated": time.Now()},
+		opSet: bson.M{"next.release_date": releaseDate, "next.last_updated": time.Now()},
 	}
 
 	result, err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).Update(ctx, selector, update)
@@ -168,9 +173,9 @@ func (m *Mongo) UpdateReleaseDate(ctx context.Context, id string, releaseDate ti
 
 // UpdateState updates state field against next object
 func (m *Mongo) UpdateState(ctx context.Context, id, state string) error {
-	selector := bson.M{"id": id}
+	selector := bson.M{paramID: id}
 	update := bson.M{
-		"$set": bson.M{"next.state": state, "next.last_updated": time.Now()},
+		opSet: bson.M{"next.state": state, "next.last_updated": time.Now()},
 	}
 
 	result, err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).Update(ctx, selector, update)
@@ -188,14 +193,14 @@ func (m *Mongo) UpdateState(ctx context.Context, id, state string) error {
 // UpsertTopic creates or overwrites an existing topic (based on id) in mongodb with a new document
 func (m *Mongo) UpsertTopic(ctx context.Context, id string, topic *models.TopicResponse) error {
 	// Topic to store in mongo
-	selector := bson.M{"id": id}
+	selector := bson.M{paramID: id}
 
 	// Update the last updated timestamp
 	currentTime := time.Now()
 	topic.Current.LastUpdated = &currentTime
 	topic.Next.LastUpdated = &currentTime
 	update := bson.M{
-		"$set": topic,
+		opSet: topic,
 	}
 
 	result, err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).Upsert(ctx, selector, update)
@@ -212,7 +217,7 @@ func (m *Mongo) UpsertTopic(ctx context.Context, id string, topic *models.TopicR
 
 // UpdateTopic updates the next instance with new values.
 func (m *Mongo) UpdateTopic(ctx context.Context, host, id string, topic *models.TopicUpdate) error {
-	selector := bson.M{"id": id}
+	selector := bson.M{paramID: id}
 	update := createTopicUpdateQuery(ctx, host, id, topic)
 
 	result, err := m.Connection.Collection(m.ActualCollectionName(config.TopicsCollection)).Update(ctx, selector, update)
@@ -260,7 +265,7 @@ func createTopicUpdateQuery(ctx context.Context, host, id string, topic *models.
 		unsetFields["next.links.subtopics"] = nil // remove subtopics link object due to no subtopics available for this topic
 	}
 
-	update := bson.M{"$set": setFields}
+	update := bson.M{opSet: setFields}
 
 	if len(unsetFields) > 0 {
 		update["$unset"] = unsetFields

@@ -178,8 +178,8 @@ func (api *API) getNavigationHandler(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	lang := req.URL.Query().Get("lang")
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
-		"function":   "getNavigationPrivateHandler",
+		logKeyReqID: ctx.Value(dprequest.RequestIdKey),
+		logKeyFunc:  "getNavigationPrivateHandler",
 	}
 
 	nav := models.Navigation{

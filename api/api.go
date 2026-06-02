@@ -17,6 +17,12 @@ import (
 	"github.com/gorilla/mux"
 )
 
+const (
+	logKeyReqID   = "request_id"
+	logKeyFunc    = "function"
+	logKeyTopicID = "topic_id"
+)
+
 // nolint:unused // just for this block
 var (
 	createPermission = auth.Permissions{Create: true}

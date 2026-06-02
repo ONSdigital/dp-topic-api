@@ -17,9 +17,9 @@ const topicRoot = "topic_root" // access specific document to retrieve list
 func (api *API) getRootTopicsPublicHandler(w http.ResponseWriter, req *http.Request) {
 	ctx := req.Context()
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
-		"topic_id":   topicRoot,
-		"function":   "getTopicsListPublicHandler",
+		logKeyReqID:   ctx.Value(dprequest.RequestIdKey),
+		logKeyTopicID: topicRoot,
+		logKeyFunc:    "getTopicsListPublicHandler",
 	}
 
 	// The mongo document with id: `topic_root` contains the list of subtopics,
@@ -33,9 +33,9 @@ func (api *API) getTopicPublicHandler(w http.ResponseWriter, req *http.Request) 
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
-		"topic_id":   id,
-		"function":   "getTopicPublicHandler",
+		logKeyReqID:   ctx.Value(dprequest.RequestIdKey),
+		logKeyTopicID: id,
+		logKeyFunc:    "getTopicPublicHandler",
 	}
 
 	if id == topicRoot {
@@ -64,9 +64,9 @@ func (api *API) getSubtopicsPublicHandler(w http.ResponseWriter, req *http.Reque
 	vars := mux.Vars(req)
 	id := vars["id"]
 	logdata := log.Data{
-		"request_id": ctx.Value(dprequest.RequestIdKey),
-		"topic_id":   id,
-		"function":   "getSubtopicsPublicHandler",
+		logKeyReqID:   ctx.Value(dprequest.RequestIdKey),
+		logKeyTopicID: id,
+		logKeyFunc:    "getSubtopicsPublicHandler",
 	}
 
 	if id == topicRoot {
