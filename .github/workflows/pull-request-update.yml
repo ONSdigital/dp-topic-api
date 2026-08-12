@@ -1,0 +1,47 @@
+on:
+  pull_request:
+    types: [synchronize]
+
+jobs:
+  pull_request_update:
+    runs-on: ubuntu-latest
+    name: Update PR message
+    env:
+      GITHUB_CONTEXT: ${{ toJson(github) }}
+    steps:
+      - name: Download PR message timestamp
+        uses: actions/download-artifact@v4
+        with:
+          name: SLACK_PR_${{ github.event.pull_request.number }}
+      - name: Print the result
+        shell: bash
+        run: |
+          echo "TS=`cat pr_vars.txt`"" >> $GITHUB_ENV
+      - run: echo "$GITHUB_CONTEXT"
+      - name: Update a Slack channel
+        id: slack
+        uses: slackapi/slack-github-action@v1.26.0
+        with:
+          # Slack channel id, channel name, or user id to post message.
+          # See also: https://api.slack.com/methods/chat.postMessage#channels
+          # You can pass in multiple channels to post to by providing a comma-delimited list of channel IDs.
+          update-ts: $TS
+          channel-id: "automation-test"
+          payload: |
+            {
+              "text": "GitHub Action build result: ${{ job.status }}\n${{ github.event.pull_request.html_url || github.event.head_commit.url }}",
+              "blocks": [
+                {
+                  "type": "section",
+                  "text": {
+                    "type": "mrkdwn",
+                    "text": "PR Updated"
+                  }
+                }
+              ]
+            }
+        env:
+          SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+
+
+
